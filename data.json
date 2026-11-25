@@ -1,0 +1,1222 @@
+{
+  "savedAt": 1795606163923,
+  "year": 2027,
+  "design": {
+    "templateId": "classic",
+    "dayFontFamily": "'supermarket', Tahoma, sans-serif",
+    "companySize": 38,
+    "companyBold": true,
+    "companyStroke": 0,
+    "subtitleSize": 19,
+    "monthTitleSize": 13,
+    "dayFont": 11,
+    "dayBold": true,
+    "italic": false,
+    "daySpacing": 0,
+    "workdaySize": 10,
+    "holListSize": 13.5,
+    "holListBold": true,
+    "holSpacing": -0.2,
+    "holLineHeight": 1,
+    "summarySize": 10,
+    "signSize": 15.5,
+    "logoSize": 84,
+    "logoTop": -2,
+    "logoLeft": 14,
+    "logoBlend": true,
+    "colWidth": 31,
+    "rowHeight": 17.5,
+    "monthGapX": 16,
+    "monthGapY": 7,
+    "equalRows": true,
+    "footerGap": 8,
+    "signMargin": 14,
+    "monthBorderWidth": 1.5,
+    "monthBorderColor": "#000000",
+    "monthRadius": 0,
+    "innerBorderWidth": 0,
+    "subtitleBg": "#f2eff7",
+    "monthHeaderBg": "#7755cd",
+    "monthHeaderText": "#000000",
+    "sunColor": "#dc2626",
+    "sunHeaderColor": "#000000",
+    "colorNat": "#a3d671",
+    "colorSpc": "#ff9966",
+    "colorSpt": "#f59e0b",
+    "printMarginY": 8,
+    "printMarginX": 10,
+    "printScale": 100
+  },
+  "calendarsByYear": {
+    "2027": {
+      "holidays": {
+        "2027-01-01": {
+          "type": "national",
+          "name": "New Year's day"
+        },
+        "2027-04-13": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-14": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-15": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-05-01": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-03": {
+          "type": "national",
+          "name": "Queen's Birthday"
+        },
+        "2027-07-28": {
+          "type": "national",
+          "name": "King's Birthday"
+        },
+        "2027-08-12": {
+          "type": "national",
+          "name": "Mother's Birthday"
+        },
+        "2027-10-13": {
+          "type": "national",
+          "name": "King Bhumibol Memorial day"
+        },
+        "2027-12-31": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2027-02-22": {
+          "type": "national",
+          "name": "Sub. Makha Bucha day"
+        },
+        "2027-01-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-01-30": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-30": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2027-01-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-12": {
+          "type": "sport",
+          "name": "Sport day"
+        },
+        "2027-06-26": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-02-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-03": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-12": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-05-15": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-05-29": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-10": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-07": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-21": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-04": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-23": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-04": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-05-03": {
+          "type": "national",
+          "name": "Sub. National Labour Day"
+        }
+      },
+      "reopenNote": "*เปิดทำงานปีใหม่ January 3, 2028 (Monday)",
+      "signs": [
+        "Prepared by …………………………………………… Date 01/12/2026",
+        "Checked by …………………………………………… Date 01/12/2026",
+        "Approved by …………………………………………… Date 01/12/2026"
+      ]
+    },
+    "2028": {
+      "holidays": {
+        "2028-01-01": {
+          "type": "national",
+          "name": "New Year's day"
+        },
+        "2028-04-13": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2028-04-14": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2028-04-15": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2028-05-01": {
+          "type": "national",
+          "name": "National Labour day"
+        },
+        "2028-06-03": {
+          "type": "national",
+          "name": "Queen's Birthday"
+        },
+        "2028-07-28": {
+          "type": "national",
+          "name": "King's Birthday"
+        },
+        "2028-08-12": {
+          "type": "national",
+          "name": "Mother's Birthday"
+        },
+        "2028-10-13": {
+          "type": "national",
+          "name": "King Bhumibol Memorial day"
+        },
+        "2028-12-05": {
+          "type": "national",
+          "name": "Father's day"
+        },
+        "2028-12-31": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2028-02-10": {
+          "type": "national",
+          "name": "Makha Bucha day"
+        },
+        "2028-01-15": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-01-29": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-02-12": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-02-26": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-03-11": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-03-25": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-04-08": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-04-22": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-05-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-05-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-06-17": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-07-01": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-07-15": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-07-29": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-08-26": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-09-09": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-09-23": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-10-07": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-10-21": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-11-04": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-11-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-12-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-12-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2028-12-30": {
+          "type": "special",
+          "name": "Interchange day"
+        }
+      },
+      "reopenNote": "*เปิดทำงานปีใหม่ January 4, 2029 (Thursday)",
+      "signs": [
+        "Prepared by …………………………………………… Date 02/12/2026",
+        "Checked by …………………………………………… Date 02/12/2026",
+        "Approved by …………………………………………… Date 02/12/2026"
+      ]
+    }
+  },
+  "versions": [
+    {
+      "id": 1795599564828,
+      "name": "รอบที่ 6 (ปี 2027)",
+      "time": "25/11/2569 16:39",
+      "year": 2027,
+      "tplName": "Classic Purple",
+      "design": {
+        "templateId": "classic",
+        "dayFontFamily": "'supermarket', Tahoma, sans-serif",
+        "companySize": 38,
+        "companyBold": true,
+        "companyStroke": 0,
+        "subtitleSize": 19,
+        "monthTitleSize": 13,
+        "dayFont": 11,
+        "dayBold": true,
+        "italic": false,
+        "daySpacing": 0,
+        "workdaySize": 10,
+        "holListSize": 13.5,
+        "holListBold": true,
+        "holSpacing": -0.2,
+        "holLineHeight": 1,
+        "summarySize": 10,
+        "signSize": 15.5,
+        "logoSize": 84,
+        "logoTop": -2,
+        "logoLeft": 14,
+        "logoBlend": true,
+        "colWidth": 31,
+        "rowHeight": 17.5,
+        "monthGapX": 16,
+        "monthGapY": 7,
+        "equalRows": true,
+        "footerGap": 8,
+        "signMargin": 14,
+        "monthBorderWidth": 1.5,
+        "monthBorderColor": "#000000",
+        "monthRadius": 0,
+        "innerBorderWidth": 0,
+        "subtitleBg": "#f2eff7",
+        "monthHeaderBg": "#7755cd",
+        "monthHeaderText": "#000000",
+        "sunColor": "#dc2626",
+        "sunHeaderColor": "#000000",
+        "colorNat": "#a3d671",
+        "colorSpc": "#ff9966",
+        "colorSpt": "#f59e0b",
+        "printMarginY": 8,
+        "printMarginX": 10,
+        "printScale": 100
+      },
+      "holidays": {
+        "2027-01-01": {
+          "type": "national",
+          "name": "New Year's day"
+        },
+        "2027-04-13": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-14": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-15": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-05-01": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-03": {
+          "type": "national",
+          "name": "Queen's Birthday"
+        },
+        "2027-07-28": {
+          "type": "national",
+          "name": "King's Birthday"
+        },
+        "2027-08-12": {
+          "type": "national",
+          "name": "Mother's Birthday"
+        },
+        "2027-10-13": {
+          "type": "national",
+          "name": "King Bhumibol Memorial day"
+        },
+        "2027-12-31": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2027-02-22": {
+          "type": "national",
+          "name": "Sub. Makha Bucha day"
+        },
+        "2027-01-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-01-30": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-30": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2027-01-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-12": {
+          "type": "sport",
+          "name": "Sport day"
+        },
+        "2027-06-26": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-02-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-03": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-12": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-05-15": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-05-29": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-10": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-07": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-21": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-04": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-23": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-04": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-05-03": {
+          "type": "national",
+          "name": "Sub. National Labour Day"
+        }
+      },
+      "reopenNote": "*เปิดทำงานปีใหม่ January 3, 2028 (Monday)"
+    },
+    {
+      "id": 1795598725601,
+      "name": "รอบที่ 7 (ปี 2027)",
+      "time": "25/11/2569 16:25",
+      "year": 2027,
+      "tplName": "Classic Purple",
+      "design": {
+        "templateId": "classic",
+        "dayFontFamily": "'supermarket', Tahoma, sans-serif",
+        "companySize": 38,
+        "companyBold": true,
+        "companyStroke": 0,
+        "subtitleSize": 19,
+        "monthTitleSize": 13,
+        "dayFont": 11,
+        "dayBold": true,
+        "italic": false,
+        "daySpacing": 0,
+        "workdaySize": 10,
+        "holListSize": 13.5,
+        "holListBold": true,
+        "holSpacing": -0.2,
+        "holLineHeight": 1,
+        "summarySize": 10,
+        "signSize": 15.5,
+        "logoSize": 84,
+        "logoTop": -2,
+        "logoLeft": 14,
+        "logoBlend": true,
+        "colWidth": 31,
+        "rowHeight": 17.5,
+        "monthGapX": 16,
+        "monthGapY": 7,
+        "equalRows": true,
+        "footerGap": 8,
+        "signMargin": 14,
+        "monthBorderWidth": 1.5,
+        "monthBorderColor": "#000000",
+        "monthRadius": 0,
+        "innerBorderWidth": 0,
+        "subtitleBg": "#f2eff7",
+        "monthHeaderBg": "#7755cd",
+        "monthHeaderText": "#000000",
+        "sunColor": "#dc2626",
+        "sunHeaderColor": "#000000",
+        "colorNat": "#a3d671",
+        "colorSpc": "#c3b5de",
+        "colorSpt": "#f59e0b",
+        "printMarginY": 8,
+        "printMarginX": 10,
+        "printScale": 100
+      },
+      "holidays": {
+        "2027-01-01": {
+          "type": "national",
+          "name": "New Year's day"
+        },
+        "2027-04-13": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-14": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-15": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-05-01": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-03": {
+          "type": "national",
+          "name": "Queen's Birthday"
+        },
+        "2027-07-28": {
+          "type": "national",
+          "name": "King's Birthday"
+        },
+        "2027-08-12": {
+          "type": "national",
+          "name": "Mother's Birthday"
+        },
+        "2027-10-13": {
+          "type": "national",
+          "name": "King Bhumibol Memorial day"
+        },
+        "2027-12-31": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2027-02-22": {
+          "type": "national",
+          "name": "Sub. Makha Bucha day"
+        },
+        "2027-01-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-01-30": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-30": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2027-01-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-12": {
+          "type": "sport",
+          "name": "Sport day"
+        },
+        "2027-06-26": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-02-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-03": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-12": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-05-03": {
+          "type": "national",
+          "name": "Sup. National Holiday"
+        },
+        "2027-05-15": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-05-29": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-10": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-07": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-21": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-04": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-23": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-04": {
+          "type": "special",
+          "name": "Interchange day"
+        }
+      },
+      "reopenNote": "*เปิดทำงานปีใหม่ January 3, 2028 (Monday)"
+    },
+    {
+      "id": 1795598477912,
+      "name": "รอบที่ 5 (ปี 2027)",
+      "time": "25/11/2569 16:21",
+      "year": 2027,
+      "tplName": "Classic Purple",
+      "design": {
+        "templateId": "classic",
+        "dayFontFamily": "'supermarket', Tahoma, sans-serif",
+        "companySize": 38,
+        "companyBold": true,
+        "companyStroke": 0,
+        "subtitleSize": 19,
+        "monthTitleSize": 13,
+        "dayFont": 11,
+        "dayBold": true,
+        "italic": false,
+        "daySpacing": 0,
+        "workdaySize": 10,
+        "holListSize": 13.5,
+        "holListBold": true,
+        "holSpacing": -0.2,
+        "holLineHeight": 1,
+        "summarySize": 10,
+        "signSize": 15.5,
+        "logoSize": 84,
+        "logoTop": -2,
+        "logoLeft": 14,
+        "logoBlend": true,
+        "colWidth": 31,
+        "rowHeight": 17.5,
+        "monthGapX": 16,
+        "monthGapY": 7,
+        "equalRows": true,
+        "footerGap": 8,
+        "signMargin": 14,
+        "monthBorderWidth": 1.5,
+        "monthBorderColor": "#000000",
+        "monthRadius": 0,
+        "innerBorderWidth": 0,
+        "subtitleBg": "#f2eff7",
+        "monthHeaderBg": "#7755cd",
+        "monthHeaderText": "#000000",
+        "sunColor": "#dc2626",
+        "sunHeaderColor": "#000000",
+        "colorNat": "#a3d671",
+        "colorSpc": "#c3b5de",
+        "colorSpt": "#f59e0b",
+        "printMarginY": 8,
+        "printMarginX": 10,
+        "printScale": 100
+      },
+      "holidays": {
+        "2027-01-01": {
+          "type": "national",
+          "name": "New Year's day"
+        },
+        "2027-04-13": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-14": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-15": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-05-01": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-03": {
+          "type": "national",
+          "name": "Queen's Birthday"
+        },
+        "2027-07-28": {
+          "type": "national",
+          "name": "King's Birthday"
+        },
+        "2027-08-12": {
+          "type": "national",
+          "name": "Mother's Birthday"
+        },
+        "2027-10-13": {
+          "type": "national",
+          "name": "King Bhumibol Memorial day"
+        },
+        "2027-12-31": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2027-02-22": {
+          "type": "national",
+          "name": "Sub. Makha Bucha day"
+        },
+        "2027-01-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-01-30": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-30": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2027-01-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-12": {
+          "type": "sport",
+          "name": "Sport day"
+        },
+        "2027-06-26": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-02-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-03": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-12": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-05-03": {
+          "type": "national",
+          "name": "Sup. National Holiday"
+        },
+        "2027-05-15": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-05-29": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-10": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-07": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-21": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-04": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-23": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-04": {
+          "type": "special",
+          "name": "Interchange day"
+        }
+      },
+      "reopenNote": "*เปิดทำงานปีใหม่ January 4, 2028 (Tuesday)"
+    },
+    {
+      "id": 1795597960192,
+      "name": "รอบที่ 4 (ปี 2027)",
+      "time": "25/11/2569 16:12",
+      "year": 2027,
+      "tplName": "Classic Purple",
+      "design": {
+        "templateId": "classic",
+        "dayFontFamily": "'supermarket', Tahoma, sans-serif",
+        "companySize": 38,
+        "companyBold": true,
+        "companyStroke": 0,
+        "subtitleSize": 19,
+        "monthTitleSize": 13,
+        "dayFont": 11,
+        "dayBold": true,
+        "italic": false,
+        "daySpacing": 0,
+        "workdaySize": 10,
+        "holListSize": 13.5,
+        "holListBold": true,
+        "holSpacing": -0.2,
+        "holLineHeight": 1,
+        "summarySize": 10,
+        "signSize": 15.5,
+        "logoSize": 84,
+        "logoTop": -2,
+        "logoLeft": 14,
+        "logoBlend": true,
+        "colWidth": 31,
+        "rowHeight": 17.5,
+        "monthGapX": 16,
+        "monthGapY": 7,
+        "equalRows": true,
+        "footerGap": 8,
+        "signMargin": 14,
+        "monthBorderWidth": 1.5,
+        "monthBorderColor": "#000000",
+        "monthRadius": 0,
+        "innerBorderWidth": 0,
+        "subtitleBg": "#f2eff7",
+        "monthHeaderBg": "#7755cd",
+        "monthHeaderText": "#000000",
+        "sunColor": "#dc2626",
+        "sunHeaderColor": "#000000",
+        "colorNat": "#a3d671",
+        "colorSpc": "#c3b5de",
+        "colorSpt": "#f59e0b",
+        "printMarginY": 8,
+        "printMarginX": 10,
+        "printScale": 100
+      },
+      "holidays": {
+        "2027-01-01": {
+          "type": "national",
+          "name": "New Year's day"
+        },
+        "2027-04-13": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-14": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-04-15": {
+          "type": "national",
+          "name": "Songkran day"
+        },
+        "2027-05-01": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-03": {
+          "type": "national",
+          "name": "Queen's Birthday"
+        },
+        "2027-07-28": {
+          "type": "national",
+          "name": "King's Birthday"
+        },
+        "2027-08-12": {
+          "type": "national",
+          "name": "Mother's Birthday"
+        },
+        "2027-10-13": {
+          "type": "national",
+          "name": "King Bhumibol Memorial day"
+        },
+        "2027-12-31": {
+          "type": "national",
+          "name": "New Year's Eve Day"
+        },
+        "2027-02-22": {
+          "type": "national",
+          "name": "Sub. Makha Bucha day"
+        },
+        "2027-01-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-01-30": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-11-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-30": {
+          "type": "national",
+          "name": "National Holiday"
+        },
+        "2027-01-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-06-12": {
+          "type": "sport",
+          "name": "Sport day"
+        },
+        "2027-06-26": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-02-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-06": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-03-20": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-03": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-04-12": {
+          "type": "national",
+          "name": "National Holiday"
+        },
+        "2027-05-03": {
+          "type": "national",
+          "name": "National Holiday"
+        },
+        "2027-05-15": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-05-29": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-10": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-07-24": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-07": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-08-21": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-04": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-09-18": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-02": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-16": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-10-23": {
+          "type": "special",
+          "name": "Interchange day"
+        },
+        "2027-12-04": {
+          "type": "special",
+          "name": "Interchange day"
+        }
+      },
+      "reopenNote": "*เปิดทำงานปีใหม่ January 4, 2028 (Tuesday)"
+    }
+  ]
+}
