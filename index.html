@@ -33,6 +33,7 @@
       --logo-blend: multiply;
 
       /* ตาราง ระยะห่าง & เส้นขอบ */
+      --col-width: 31px;
       --row-height: 17.5px;
       --month-gap-x: 16px;
       --month-gap-y: 7px;
@@ -130,7 +131,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #107c41; /* สีเขียวสไตล์ Excel */
+      background: #107c41;
       padding: 6px 12px 0 12px;
     }
     .ribbon-tab-list { display: flex; gap: 4px; }
@@ -194,7 +195,7 @@
     }
     .ctrl-item:last-child { margin-bottom: 0; }
     .ctrl-item label { font-size: 11px; color: #334155; white-space: nowrap; }
-    .ctrl-item input[type="range"] { width: 82px; cursor: pointer; accent-color: #107c41; }
+    .ctrl-item input[type="range"] { width: 80px; cursor: pointer; accent-color: #107c41; }
     .ctrl-item input[type="color"] { width: 32px; height: 22px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; padding: 0; }
     .ctrl-item select {
       padding: 3px 5px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; font-family: Tahoma, sans-serif; max-width: 130px;
@@ -287,14 +288,20 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: var(--month-gap-y) var(--month-gap-x);
+      justify-items: center;
     }
     .month-card {
       border: none;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      align-items: center;
+      width: 100%;
     }
     .month-title {
+      width: calc(var(--col-width) * 7);
+      max-width: 100%;
+      margin: 0 auto;
       text-align: center;
       font-family: var(--main-font);
       font-size: var(--month-title-size);
@@ -303,7 +310,9 @@
       letter-spacing: 0.5px;
     }
     .month-table {
-      width: 100%;
+      width: calc(var(--col-width) * 7);
+      max-width: 100%;
+      margin: 0 auto;
       border-collapse: collapse;
       table-layout: fixed;
       border: var(--month-border-width) solid var(--month-border-color);
@@ -364,21 +373,24 @@
     .split-top {
       position: absolute;
       top: 1px;
-      left: 3px;
-      font-size: calc(var(--day-font-size) * 0.78);
+      left: 2px;
+      font-size: calc(var(--day-font-size) * 0.75);
       line-height: 1;
       letter-spacing: 0;
     }
     .split-bottom {
       position: absolute;
       bottom: 1px;
-      right: 3px;
-      font-size: calc(var(--day-font-size) * 0.78);
+      right: 2px;
+      font-size: calc(var(--day-font-size) * 0.75);
       line-height: 1;
       letter-spacing: 0;
     }
 
     .workday-row {
+      width: calc(var(--col-width) * 7);
+      max-width: 100%;
+      margin: 0 auto;
       font-family: var(--main-font);
       font-size: var(--workday-size);
       text-align: var(--workday-align);
@@ -620,14 +632,15 @@
       <!-- แท็บ 2: ตาราง & ระยะห่าง -->
       <div class="ribbon-pane" id="tabLayout">
         <div class="ctrl-group">
-          <div class="ctrl-group-title">ระยะห่างตัวเลขวันที่</div>
-          <div class="ctrl-item"><label>ระยะห่างบน-ล่าง (สูงแถว)</label><input type="range" id="cfgRowHeight" min="14" max="25" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valRowHeight"></span></div>
+          <div class="ctrl-group-title">ช่องไฟระหว่างวันที่</div>
+          <div class="ctrl-item"><label>ช่องไฟแนวนอน (กว้างช่อง)</label><input type="range" id="cfgColWidth" min="22" max="36" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valColWidth"></span></div>
+          <div class="ctrl-item"><label>ช่องไฟแนวตั้ง (สูงแถว)</label><input type="range" id="cfgRowHeight" min="12" max="26" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valRowHeight"></span></div>
           <div class="ctrl-item"><label>ช่องไฟตัวเลข (2 หลัก)</label><input type="range" id="cfgDaySpacing" min="-1" max="3" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valDaySpacing"></span></div>
         </div>
 
         <div class="ctrl-group">
           <div class="ctrl-group-title">ระยะห่างระหว่างเดือน</div>
-          <div class="ctrl-item"><label>ช่องว่างซ้าย-ขวา</label><input type="range" id="cfgMonthGapX" min="6" max="30" oninput="updateDesign()"><span class="ctrl-val" id="valMonthGapX"></span></div>
+          <div class="ctrl-item"><label>ช่องว่างซ้าย-ขวา</label><input type="range" id="cfgMonthGapX" min="4" max="40" oninput="updateDesign()"><span class="ctrl-val" id="valMonthGapX"></span></div>
           <div class="ctrl-item"><label>ช่องว่างบน-ล่าง</label><input type="range" id="cfgMonthGapY" min="2" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valMonthGapY"></span></div>
         </div>
 
@@ -803,6 +816,7 @@
     logoLeft: 14,
     logoBlend: true,
 
+    colWidth: 31,
     rowHeight: 17.5,
     monthGapX: 16,
     monthGapY: 7,
@@ -891,6 +905,7 @@
     document.getElementById('cfgLogoLeft').value = design.logoLeft;
     document.getElementById('cfgLogoBlend').checked = design.logoBlend;
 
+    document.getElementById('cfgColWidth').value = design.colWidth;
     document.getElementById('cfgRowHeight').value = design.rowHeight;
     document.getElementById('cfgMonthGapX').value = design.monthGapX;
     document.getElementById('cfgMonthGapY').value = design.monthGapY;
@@ -940,6 +955,7 @@
     r.setProperty('--logo-left', design.logoLeft + 'px');
     r.setProperty('--logo-blend', design.logoBlend ? 'multiply' : 'normal');
 
+    r.setProperty('--col-width', design.colWidth + 'px');
     r.setProperty('--row-height', design.rowHeight + 'px');
     r.setProperty('--month-gap-x', design.monthGapX + 'px');
     r.setProperty('--month-gap-y', design.monthGapY + 'px');
@@ -980,6 +996,7 @@
     document.getElementById('valLogoTop').textContent = design.logoTop + 'px';
     document.getElementById('valLogoLeft').textContent = design.logoLeft + 'px';
 
+    document.getElementById('valColWidth').textContent = design.colWidth + 'px';
     document.getElementById('valRowHeight').textContent = design.rowHeight + 'px';
     document.getElementById('valMonthGapX').textContent = design.monthGapX + 'px';
     document.getElementById('valMonthGapY').textContent = design.monthGapY + 'px';
@@ -1015,6 +1032,7 @@
       logoLeft: Number(document.getElementById('cfgLogoLeft').value),
       logoBlend: document.getElementById('cfgLogoBlend').checked,
 
+      colWidth: Number(document.getElementById('cfgColWidth').value),
       rowHeight: Number(document.getElementById('cfgRowHeight').value),
       monthGapX: Number(document.getElementById('cfgMonthGapX').value),
       monthGapY: Number(document.getElementById('cfgMonthGapY').value),
