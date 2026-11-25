@@ -52,7 +52,7 @@
       --sun-header-color: #000000;
       --color-national: #CFFF9F;
       --color-special: #DDD3F1;
-      --color-sport: #FEF08A;
+      --color-sport: #F59E0B;
 
       /* พิมพ์ */
       --print-scale: 1;
@@ -108,6 +108,7 @@
     .btn-purple { background: #8b5cf6; color: #fff; font-weight: bold; }
     .btn-green { background: #10b981; color: #fff; font-weight: bold; }
     .btn-amber { background: #f59e0b; color: #000; font-weight: bold; }
+    .btn-gold { background: #eab308; color: #0f172a; font-weight: bold; }
     .btn-pink { background: #ec4899; color: #fff; font-weight: bold; }
     .btn-slate { background: #475569; color: #fff; }
     .mode-active { outline: 2px solid #fde047; }
@@ -383,10 +384,27 @@
     }
     .day-cell:hover { filter: brightness(0.92); outline: 1px solid #3b82f6; }
 
-    /* สีวันหยุด */
+    /* สีวันหยุด & สัญลักษณ์ดาวแฉกวันกีฬาสี */
     .bg-national { background-color: var(--color-national) !important; }
     .bg-special  { background-color: var(--color-special) !important; }
-    .bg-sport    { background-color: var(--color-sport) !important; }
+    .bg-sport {
+      position: relative;
+      background-color: transparent !important;
+    }
+    .sport-star-svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 92%;
+      height: 98%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .day-num-inner {
+      position: relative;
+      z-index: 1;
+    }
 
     /* ช่องวันที่คู่แบบมีเส้นทแยงมุม */
     .split-cell {
@@ -401,6 +419,7 @@
       font-size: calc(var(--day-font-size) * 0.75);
       line-height: 1;
       letter-spacing: 0;
+      z-index: 1;
     }
     .split-bottom {
       position: absolute;
@@ -409,6 +428,7 @@
       font-size: calc(var(--day-font-size) * 0.75);
       line-height: 1;
       letter-spacing: 0;
+      z-index: 1;
     }
 
     .workday-row {
@@ -473,7 +493,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 6px;
     }
     .sum-mid {
       padding: 5px 12px;
@@ -573,6 +593,7 @@
     </div>
     <div class="toolbar-group">
       <button id="btnModeQuick" class="btn-slate mode-active" onclick="setMode('quick')">🎨 สลับสีเร็ว</button>
+      <button id="btnModeSport" class="btn-gold" onclick="setMode('sport')">⭐ จิ้มวันกีฬาสี</button>
       <button id="btnModeEdit" class="btn-slate" onclick="setMode('edit')">✏️ แก้ชื่อวันหยุด</button>
       <button id="btnDesign" class="btn-pink" onclick="toggleDesignPanel()">⚙️ ปรับแต่งฟอร์ม (Excel)</button>
       <label class="btn btn-slate">🖼️ โลโก้ <input type="file" accept="image/*" style="display:none" onchange="uploadLogo(event)"></label>
@@ -729,7 +750,7 @@
           <div class="ctrl-item"><label>วันหยุดพิเศษ</label>
             <div class="color-wrap"><input type="color" id="cfgColorSpc" oninput="updateDesign()"><input type="text" class="hex-input" id="hexColorSpc" maxlength="7" oninput="onHexInput(this,'cfgColorSpc')"></div>
           </div>
-          <div class="ctrl-item"><label>วันกีฬา (Sport)</label>
+          <div class="ctrl-item"><label>วันกีฬาสี (ขอบดาว)</label>
             <div class="color-wrap"><input type="color" id="cfgColorSpt" oninput="updateDesign()"><input type="text" class="hex-input" id="hexColorSpt" maxlength="7" oninput="onHexInput(this,'cfgColorSpt')"></div>
           </div>
         </div>
@@ -788,7 +809,12 @@
         <div class="holiday-list" id="holidayList"></div>
         <div class="summary-box">
           <div class="sum-total">Total Working Day &nbsp;<span id="sumWork">0</span>&nbsp; days</div>
-          <div class="sum-sport"><span>☀️</span> <span id="sumSport">Sport day 0 day</span></div>
+          <div class="sum-sport">
+            <svg viewBox="0 0 36 28" width="22" height="17" style="flex-shrink:0;">
+              <polygon points="18,1.5 22,6 29,4 28,11 34.5,14 28,17 29,24 22,22 18,26.5 14,22 7,24 8,17 1.5,14 8,11 7,4 14,6" fill="#ffffff" stroke="var(--color-sport)" stroke-width="2.4" stroke-linejoin="round"/>
+            </svg>
+            <span id="sumSport">Sport day 0 day</span>
+          </div>
           <div class="sum-mid">
             <div class="sum-row"><span class="swatch" style="background:var(--color-national)"></span> National Holiday &nbsp;&nbsp;= <span id="sumNat">0</span> days</div>
             <div class="sum-row"><span class="swatch" style="background:var(--color-special)"></span> Special Holiday &nbsp;&nbsp;&nbsp;&nbsp;= <span id="sumSpc">0</span> days</div>
@@ -814,10 +840,10 @@
         <option value="">วันทำงานปกติ (ไม่มีสี)</option>
         <option value="national">National Holiday (สีเขียว)</option>
         <option value="special">Special / Interchange day (สีม่วง)</option>
-        <option value="sport">Sport Day (สีเหลือง)</option>
+        <option value="sport">Sport Day (สัญลักษณ์ดาวแฉก)</option>
       </select>
       <label>ชื่อวันหยุด (แสดงด้านล่างปฏิทิน):</label>
-      <input type="text" id="modalName" placeholder="เช่น New Year's day หรือ Interchange day">
+      <input type="text" id="modalName" placeholder="เช่น New Year's day หรือ Sport day">
       <div class="modal-actions">
         <button class="btn-slate" style="padding:6px 12px;border-radius:6px;border:none;color:#fff;cursor:pointer;" onclick="closeModal()">ยกเลิก</button>
         <button class="btn-primary" style="padding:6px 14px;border-radius:6px;border:none;cursor:pointer;" onclick="saveModal()">บันทึก</button>
@@ -829,6 +855,7 @@
   const MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
   const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const DAYS_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const SPORT_STAR_SVG = `<svg class="sport-star-svg" viewBox="0 0 36 28" preserveAspectRatio="none"><polygon points="18,1.5 22,6 29,4 28,11 34.5,14 28,17 29,24 22,22 18,26.5 14,22 7,24 8,17 1.5,14 8,11 7,4 14,6" fill="#ffffff" stroke="var(--color-sport)" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
 
   const DEFAULT_DESIGN = {
     mainFont: "'supermarket', Tahoma, sans-serif",
@@ -872,7 +899,7 @@
     sunHeaderColor: "#000000",
     colorNat: "#CFFF9F",
     colorSpc: "#DDD3F1",
-    colorSpt: "#FEF08A",
+    colorSpt: "#F59E0B",
 
     printMarginY: 8,
     printMarginX: 10,
@@ -887,7 +914,12 @@
 
   try {
     const saved = localStorage.getItem('clc_calendar_design_v2');
-    if (saved) design = { ...DEFAULT_DESIGN, ...JSON.parse(saved) };
+    if (saved) {
+      design = { ...DEFAULT_DESIGN, ...JSON.parse(saved) };
+      if (design.colorSpt && design.colorSpt.toUpperCase() === '#FEF08A') {
+        design.colorSpt = '#F59E0B';
+      }
+    }
   } catch (e) {}
 
   function onHexInput(hexEl, colorId) {
@@ -1159,6 +1191,7 @@
   function setMode(m) {
     clickMode = m;
     document.getElementById('btnModeQuick').classList.toggle('mode-active', m === 'quick');
+    document.getElementById('btnModeSport').classList.toggle('mode-active', m === 'sport');
     document.getElementById('btnModeEdit').classList.toggle('mode-active', m === 'edit');
   }
 
@@ -1220,7 +1253,12 @@
   }
 
   function handleDayClick(k) {
-    if (clickMode === 'quick') {
+    if (clickMode === 'sport') {
+      const cur = holidays[k];
+      if (cur && cur.type === 'sport') delete holidays[k];
+      else holidays[k] = { type: 'sport', name: 'Sport day' };
+      renderCalendar();
+    } else if (clickMode === 'quick') {
       const cur = holidays[k];
       if (!cur) holidays[k] = { type: 'national', name: 'National Holiday' };
       else if (cur.type === 'national') holidays[k] = { type: 'special', name: 'Interchange day' };
@@ -1274,7 +1312,7 @@
         if (h) {
           if (h.type === 'national') natCount++;
           else if (h.type === 'special') spcCount++;
-          else if (h.type === 'sport') sportDates.push(`${d} ${MONTHS[m]} ${currentYear}`);
+          else if (h.type === 'sport') sportDates.push(`${d} ${MONTHS_SHORT[m]} ${currentYear}`);
           listItems.push({ k, label: `${DAYS_SHORT[dow]} ${d} ${MONTHS_SHORT[m]} : ${h.name}`, type: h.type });
         } else if (dow !== 0) {
           monthWork++;
@@ -1294,12 +1332,14 @@
             const k2 = daysArr.length === 2 ? dateKey(currentYear, m, daysArr[1]) : null;
             const activeKey = (k2 && holidays[k2] && !holidays[k1]) ? k2 : k1;
             const h = holidays[activeKey];
+            const isSport = h && h.type === 'sport';
             const bgCls = h ? (h.type === 'national' ? 'bg-national' : h.type === 'special' ? 'bg-special' : 'bg-sport') : '';
             const sunCls = c === 0 ? 'sun-col' : '';
+            const starHtml = isSport ? SPORT_STAR_SVG : '';
             if (daysArr.length === 2) {
-              rowsHtml += `<td class="day-cell split-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}"><span class="split-top">${daysArr[0]}</span><span class="split-bottom">${daysArr[1]}</span></td>`;
+              rowsHtml += `<td class="day-cell split-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${starHtml}<span class="split-top">${daysArr[0]}</span><span class="split-bottom">${daysArr[1]}</span></td>`;
             } else {
-              rowsHtml += `<td class="day-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${daysArr[0]}</td>`;
+              rowsHtml += `<td class="day-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${starHtml}<span class="day-num-inner">${daysArr[0]}</span></td>`;
             }
           }
         }
