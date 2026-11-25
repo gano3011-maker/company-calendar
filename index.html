@@ -9,24 +9,52 @@
   </style>
   <style>
     :root {
+      /* ฟอนต์ & ขนาดตัวอักษรทุกส่วน */
+      --main-font: 'supermarket', Tahoma, sans-serif;
+      --company-size: 38px;
+      --subtitle-size: 19px;
+      --month-title-size: 13px;
+      --th-th-size: 10px;
+      --th-en-size: 8.5px;
+      --day-font-size: 11px;
+      --day-font-weight: 700;
+      --day-font-style: normal;
+      --day-letter-spacing: 0px;
+      --workday-size: 10px;
+      --workday-align: center;
+      --hol-list-size: 7.5px;
+      --summary-size: 10px;
+      --sign-size: 15.5px;
+
+      /* โลโก้ */
       --logo-size: 84px;
       --logo-top: -2px;
       --logo-left: 14px;
-      --company-size: 38px;
-      --subtitle-bg: #F2EFF7;
-      --month-header-bg: #E3DCEB;
+      --logo-blend: multiply;
+
+      /* ตาราง ระยะห่าง & เส้นขอบ */
+      --row-height: 17.5px;
+      --month-gap-x: 16px;
+      --month-gap-y: 7px;
+      --footer-gap-top: 8px;
+      --sign-margin-top: 14px;
       --month-border-width: 1.5px;
       --month-border-color: #000000;
-      --row-height: 19px;
-      --day-font-size: 11px;
-      --month-gap-y: 9px;
-      --footer-gap-top: 8px;
-      --sign-margin-top: 16px;
+      --inner-border-width: 0px;
+      --inner-border-color: #cbd5e1;
+
+      /* โทนสี */
+      --subtitle-bg: #F2EFF7;
+      --month-header-bg: #E3DCEB;
+      --day-text-color: #000000;
       --sun-color: #dc2626;
       --sun-header-color: #000000;
       --color-national: #CFFF9F;
       --color-special: #DDD3F1;
       --color-sport: #FEF08A;
+
+      /* พิมพ์ */
+      --print-scale: 1;
     }
 
     @font-face {
@@ -42,18 +70,18 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: #e2e8f0;
-      font-family: 'supermarket', Tahoma, sans-serif;
+      font-family: var(--main-font);
       color: #000;
-      padding: 16px;
+      padding: 14px;
     }
 
-    /* แผงควบคุมด้านบน (ซ่อนอัตโนมัติเวลาสั่งพิมพ์ PDF) */
+    /* แผงควบคุมหลักด้านบน */
     .toolbar {
       max-width: 1122px;
       margin: 0 auto 10px auto;
       background: #1e293b;
       color: #fff;
-      padding: 11px 15px;
+      padding: 10px 14px;
       border-radius: 12px;
       display: flex;
       flex-wrap: wrap;
@@ -64,7 +92,7 @@
       font-size: 13px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    .toolbar-group { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+    .toolbar-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
     .toolbar select, .toolbar button, .toolbar label.btn {
       padding: 6px 10px;
       border-radius: 6px;
@@ -83,58 +111,112 @@
     .btn-slate { background: #475569; color: #fff; }
     .mode-active { outline: 2px solid #fde047; }
 
-    /* แผงปรับแต่งฟอร์ม (เปิด/ปิดได้เอง ไม่ต้องแก้โค้ด) */
-    .design-panel {
+    /* แถบเครื่องมือปรับแต่งสไตล์ Excel Ribbon */
+    .excel-ribbon {
       display: none;
       max-width: 1122px;
       margin: 0 auto 14px auto;
-      background: #ffffff;
-      border: 2px solid #cbd5e1;
-      border-radius: 12px;
-      padding: 14px 16px;
+      background: #f3f4f6;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      overflow: hidden;
       font-family: Tahoma, sans-serif;
       font-size: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
     }
-    .design-panel.open { display: block; }
-    .design-header {
+    .excel-ribbon.open { display: block; }
+
+    .ribbon-tabs {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #e2e8f0;
+      background: #107c41; /* สีเขียวสไตล์ Excel */
+      padding: 6px 12px 0 12px;
     }
-    .design-header h4 { font-size: 13.5px; color: #0f172a; }
-    .design-grid {
+    .ribbon-tab-list { display: flex; gap: 4px; }
+    .ribbon-tab {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      font-family: Tahoma, sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .ribbon-tab.active {
+      background: #f3f4f6;
+      color: #107c41;
+    }
+    .ribbon-actions { display: flex; gap: 6px; padding-bottom: 5px; }
+    .ribbon-actions button {
+      padding: 4px 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 11.5px;
+      cursor: pointer;
+      font-family: Tahoma, sans-serif;
+      font-weight: bold;
+    }
+
+    .ribbon-body {
+      padding: 12px 14px;
+      background: #f8fafc;
+    }
+    .ribbon-pane { display: none; }
+    .ribbon-pane.active {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px 16px;
+      gap: 10px 14px;
     }
+
     .ctrl-group {
-      background: #f8fafc;
+      background: #ffffff;
       padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid #e2e8f0;
     }
     .ctrl-group-title {
       font-weight: bold;
-      color: #334155;
-      margin-bottom: 6px;
+      color: #107c41;
+      margin-bottom: 7px;
       font-size: 11.5px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
     }
     .ctrl-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 6px;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
     .ctrl-item:last-child { margin-bottom: 0; }
-    .ctrl-item label { font-size: 11px; color: #475569; white-space: nowrap; }
-    .ctrl-item input[type="range"] { width: 82px; cursor: pointer; }
+    .ctrl-item label { font-size: 11px; color: #334155; white-space: nowrap; }
+    .ctrl-item input[type="range"] { width: 82px; cursor: pointer; accent-color: #107c41; }
     .ctrl-item input[type="color"] { width: 32px; height: 22px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; padding: 0; }
+    .ctrl-item select {
+      padding: 3px 5px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; font-family: Tahoma, sans-serif; max-width: 130px;
+    }
     .ctrl-val { font-size: 10.5px; color: #0f172a; font-weight: bold; min-width: 34px; text-align: right; }
+
+    .mini-btn-group { display: flex; gap: 3px; }
+    .mini-btn {
+      padding: 3px 8px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #1e293b;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-family: Tahoma, sans-serif;
+    }
+    .mini-btn.active {
+      background: #107c41;
+      color: #fff;
+      border-color: #107c41;
+    }
 
     /* หน้ากระดาษ A4 แนวนอน */
     .a4-sheet {
@@ -149,7 +231,7 @@
       justify-content: flex-start;
     }
 
-    /* ส่วนหัว: โลโก้ + ชื่อบริษัท + แถบสีม่วงอ่อนคาดยาวด้านหลังโลโก้ */
+    /* ส่วนหัว */
     .cal-header {
       position: relative;
       margin-bottom: 8px;
@@ -164,12 +246,12 @@
       display: flex;
       align-items: center;
       pointer-events: none;
-      mix-blend-mode: multiply;
+      mix-blend-mode: var(--logo-blend);
     }
     .logo-box img {
       height: var(--logo-size);
       width: auto;
-      max-width: 180px;
+      max-width: 200px;
       object-fit: contain;
     }
     .title-block {
@@ -179,7 +261,7 @@
       z-index: 1;
     }
     .company-name {
-      font-family: 'CLC Logo', 'supermarket', Georgia, serif;
+      font-family: 'CLC Logo', var(--main-font);
       font-size: var(--company-size);
       font-weight: bold;
       line-height: 1.05;
@@ -193,18 +275,18 @@
       padding: 3px 0;
     }
     .cal-subtitle {
-      font-family: 'supermarket', Tahoma, sans-serif;
-      font-size: 19px;
+      font-family: var(--main-font);
+      font-size: var(--subtitle-size);
       font-weight: bold;
       color: #000;
       display: inline-block;
     }
 
-    /* ตาราง 12 เดือน (4 คอลัมน์ x 3 แถว) */
+    /* ตาราง 12 เดือน */
     .months-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: var(--month-gap-y) 18px;
+      gap: var(--month-gap-y) var(--month-gap-x);
     }
     .month-card {
       border: none;
@@ -214,8 +296,8 @@
     }
     .month-title {
       text-align: center;
-      font-family: 'supermarket', Tahoma, sans-serif;
-      font-size: 13px;
+      font-family: var(--main-font);
+      font-size: var(--month-title-size);
       font-weight: bold;
       padding: 0 0 2px 0;
       letter-spacing: 0.5px;
@@ -228,29 +310,31 @@
     }
     .month-table th, .month-table td {
       text-align: center;
-      font-family: 'supermarket', Tahoma, sans-serif;
-      border: none;
+      font-family: var(--main-font);
+      border: var(--inner-border-width) solid var(--inner-border-color);
       height: var(--row-height);
       line-height: var(--row-height);
       font-size: var(--day-font-size);
-      color: #000;
+      color: var(--day-text-color);
     }
     .month-table tr.th-th th {
       background: var(--month-header-bg);
-      font-size: 10px;
+      font-size: var(--th-th-size);
       font-weight: bold;
-      height: 15px;
-      line-height: 15px;
+      height: calc(var(--th-th-size) + 5px);
+      line-height: calc(var(--th-th-size) + 5px);
       color: #000000;
+      border-bottom: none;
     }
     .month-table tr.th-en th {
       background: var(--month-header-bg);
-      font-size: 8.5px;
+      font-size: var(--th-en-size);
       font-weight: bold;
-      height: 14px;
-      line-height: 14px;
+      height: calc(var(--th-en-size) + 5px);
+      line-height: calc(var(--th-en-size) + 5px);
       padding-bottom: 1px;
       color: #000000;
+      border-top: none;
     }
     .month-table th.sun-col { color: var(--sun-header-color) !important; }
     .month-table td.sun-col,
@@ -258,7 +342,9 @@
 
     .day-cell {
       cursor: pointer;
-      font-weight: bold;
+      font-weight: var(--day-font-weight);
+      font-style: var(--day-font-style);
+      letter-spacing: var(--day-letter-spacing);
       user-select: none;
       transition: filter 0.1s;
     }
@@ -269,7 +355,7 @@
     .bg-special  { background-color: var(--color-special) !important; }
     .bg-sport    { background-color: var(--color-sport) !important; }
 
-    /* ช่องวันที่คู่แบบมีเส้นทแยงมุม (เฉพาะวันสุดท้ายของเดือน) */
+    /* ช่องวันที่คู่แบบมีเส้นทแยงมุม */
     .split-cell {
       position: relative;
       padding: 0 !important;
@@ -279,26 +365,28 @@
       position: absolute;
       top: 1px;
       left: 3px;
-      font-size: 8.5px;
+      font-size: calc(var(--day-font-size) * 0.78);
       line-height: 1;
+      letter-spacing: 0;
     }
     .split-bottom {
       position: absolute;
       bottom: 1px;
       right: 3px;
-      font-size: 8.5px;
+      font-size: calc(var(--day-font-size) * 0.78);
       line-height: 1;
+      letter-spacing: 0;
     }
 
     .workday-row {
-      font-family: 'supermarket', Tahoma, sans-serif;
-      font-size: 10px;
-      text-align: center;
+      font-family: var(--main-font);
+      font-size: var(--workday-size);
+      text-align: var(--workday-align);
       padding: 2px 2px 0 2px;
       color: #1e293b;
     }
 
-    /* ส่วนล่าง: รายการวันหยุด 5 คอลัมน์ + กล่องสรุปกรอบดำ */
+    /* ส่วนล่าง */
     .footer-section {
       margin-top: var(--footer-gap-top);
     }
@@ -315,7 +403,7 @@
       grid-template-rows: repeat(9, auto);
       gap: 1px 6px;
       font-family: Tahoma, sans-serif;
-      font-size: 7.5px;
+      font-size: var(--hol-list-size);
       font-weight: bold;
       line-height: 1.42;
       color: #111;
@@ -331,7 +419,7 @@
     .summary-box {
       border: 1.5px solid #000;
       font-family: Calibri, Tahoma, sans-serif;
-      font-size: 10px;
+      font-size: var(--summary-size);
       font-weight: bold;
       line-height: 1.4;
       background: #fff;
@@ -371,7 +459,7 @@
       background: #BFBFBF;
       text-align: center;
       padding: 3px 6px;
-      font-size: 9px;
+      font-size: calc(var(--summary-size) * 0.9);
       color: #dc2626;
     }
 
@@ -383,7 +471,7 @@
       margin-top: var(--sign-margin-top);
       padding-bottom: 2px;
       font-family: 'KodchiangUPC', Tahoma, sans-serif;
-      font-size: 15.5px;
+      font-size: var(--sign-size);
       font-weight: bold;
       text-align: center;
     }
@@ -422,7 +510,7 @@
         padding: 0;
         margin: 0;
       }
-      .toolbar, .design-panel, .modal-bg { display: none !important; }
+      .toolbar, .excel-ribbon, .modal-bg { display: none !important; }
       .a4-sheet {
         width: 100%;
         min-height: auto;
@@ -430,6 +518,7 @@
         margin: 0;
         box-shadow: none;
         page-break-after: avoid;
+        zoom: var(--print-scale);
       }
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
@@ -437,7 +526,7 @@
 </head>
 <body>
 
-  <!-- แผงควบคุมการทำงาน -->
+  <!-- แผงควบคุมหลัก -->
   <div class="toolbar">
     <div class="toolbar-group">
       <strong>📅 ปี:</strong>
@@ -449,7 +538,7 @@
     <div class="toolbar-group">
       <button id="btnModeQuick" class="btn-slate mode-active" onclick="setMode('quick')">🎨 สลับสีเร็ว</button>
       <button id="btnModeEdit" class="btn-slate" onclick="setMode('edit')">✏️ แก้ชื่อวันหยุด</button>
-      <button id="btnDesign" class="btn-pink" onclick="toggleDesignPanel()">⚙️ ปรับแต่งฟอร์ม</button>
+      <button id="btnDesign" class="btn-pink" onclick="toggleDesignPanel()">⚙️ ปรับแต่งฟอร์ม (Excel)</button>
       <label class="btn btn-slate">🖼️ โลโก้ <input type="file" accept="image/*" style="display:none" onchange="uploadLogo(event)"></label>
       <button class="btn-green" onclick="exportJSON()">💾 บันทึกไฟล์</button>
       <label class="btn btn-slate">📂 เปิดไฟล์ <input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
@@ -457,53 +546,173 @@
     </div>
   </div>
 
-  <!-- แผงปรับแต่งหน้าตาฟอร์มแบบ Real-time -->
-  <div class="design-panel" id="designPanel">
-    <div class="design-header">
-      <h4>⚙️ ปรับแต่งหน้าตาฟอร์ม (บันทึกอัตโนมัติในเครื่อง &amp; ซ่อนอัตโนมัติตอนพิมพ์)</h4>
-      <div style="display:flex; gap:8px;">
-        <button class="btn-slate" style="padding:4px 10px;border-radius:6px;border:none;color:#fff;cursor:pointer;font-size:11.5px;" onclick="resetDesign()">🔄 คืนค่าเริ่มต้น</button>
-        <button class="btn-primary" style="padding:4px 10px;border-radius:6px;border:none;cursor:pointer;font-size:11.5px;" onclick="toggleDesignPanel()">✓ เสร็จสิ้น</button>
+  <!-- แถบเครื่องมือปรับแต่งสไตล์ Excel Ribbon -->
+  <div class="excel-ribbon" id="designPanel">
+    <div class="ribbon-tabs">
+      <div class="ribbon-tab-list">
+        <button class="ribbon-tab active" onclick="switchTab('tabFont', this)">🔤 ฟอนต์ &amp; ตัวอักษร</button>
+        <button class="ribbon-tab" onclick="switchTab('tabLayout', this)">📏 ตาราง &amp; ระยะห่าง</button>
+        <button class="ribbon-tab" onclick="switchTab('tabStyle', this)">🎨 เส้นขอบ &amp; สี</button>
+        <button class="ribbon-tab" onclick="switchTab('tabPrint', this)">🖼️ โลโก้ &amp; หน้าพิมพ์ A4</button>
+      </div>
+      <div class="ribbon-actions">
+        <button style="background:#e2e8f0;color:#1e293b;" onclick="resetDesign()">🔄 คืนค่าเริ่มต้น</button>
+        <button style="background:#fde047;color:#0f172a;" onclick="toggleDesignPanel()">✓ พับแถบเครื่องมือ</button>
       </div>
     </div>
-    <div class="design-grid">
-      <div class="ctrl-group">
-        <div class="ctrl-group-title">🖼️ ส่วนหัว &amp; โลโก้</div>
-        <div class="ctrl-item"><label>ขนาดโลโก้</label><input type="range" id="cfgLogoSize" min="50" max="120" oninput="updateDesign()"><span class="ctrl-val" id="valLogoSize"></span></div>
-        <div class="ctrl-item"><label>โลโก้ บน-ล่าง</label><input type="range" id="cfgLogoTop" min="-20" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valLogoTop"></span></div>
-        <div class="ctrl-item"><label>โลโก้ ซ้าย-ขวา</label><input type="range" id="cfgLogoLeft" min="0" max="60" oninput="updateDesign()"><span class="ctrl-val" id="valLogoLeft"></span></div>
-        <div class="ctrl-item"><label>ขนาดชื่อบริษัท</label><input type="range" id="cfgCompanySize" min="26" max="48" oninput="updateDesign()"><span class="ctrl-val" id="valCompanySize"></span></div>
-      </div>
 
-      <div class="ctrl-group">
-        <div class="ctrl-group-title">📏 ระยะห่าง &amp; กรอบเดือน</div>
-        <div class="ctrl-item"><label>ความสูงแถววันที่</label><input type="range" id="cfgRowHeight" min="15" max="25" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valRowHeight"></span></div>
-        <div class="ctrl-item"><label>ขนาดตัวเลขวันที่</label><input type="range" id="cfgDayFont" min="9" max="14" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valDayFont"></span></div>
-        <div class="ctrl-item"><label>ช่องว่างแถวเดือน</label><input type="range" id="cfgMonthGapY" min="4" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valMonthGapY"></span></div>
-        <div class="ctrl-item"><label>ช่องว่างก่อนส่วนท้าย</label><input type="range" id="cfgFooterGap" min="2" max="28" oninput="updateDesign()"><span class="ctrl-val" id="valFooterGap"></span></div>
-        <div class="ctrl-item"><label>ความหนากรอบเดือน</label><input type="range" id="cfgMonthBorderWidth" min="0" max="3" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valMonthBorderWidth"></span></div>
-      </div>
-
-      <div class="ctrl-group">
-        <div class="ctrl-group-title">🎨 โทนสี &amp; วันอาทิตย์</div>
-        <div class="ctrl-item"><label>แถบคาด Calendar</label><input type="color" id="cfgSubtitleBg" oninput="updateDesign()"></div>
-        <div class="ctrl-item"><label>แถบหัวตารางเดือน</label><input type="color" id="cfgMonthHeaderBg" oninput="updateDesign()"></div>
-        <div class="ctrl-item"><label>สีกรอบแต่ละเดือน</label><input type="color" id="cfgMonthBorderColor" oninput="updateDesign()"></div>
-        <div class="ctrl-item"><label>สีตัวเลขวันอาทิตย์</label><input type="color" id="cfgSunColor" oninput="updateDesign()"></div>
-        <div class="ctrl-item"><label>สีหัวตาราง อา./SUN</label><input type="color" id="cfgSunHeaderColor" oninput="updateDesign()"></div>
-      </div>
-
-      <div class="ctrl-group">
-        <div class="ctrl-group-title">🖨️ ช่องเซ็นชื่อ &amp; ขอบพิมพ์ A4</div>
-        <div class="ctrl-item"><label>ช่องว่างเหนือเซ็นชื่อ</label><input type="range" id="cfgSignMargin" min="6" max="32" oninput="updateDesign()"><span class="ctrl-val" id="valSignMargin"></span></div>
-        <div class="ctrl-item"><label>ขอบพิมพ์ บน-ล่าง</label><input type="range" id="cfgPrintMarginY" min="4" max="16" oninput="updateDesign()"><span class="ctrl-val" id="valPrintMarginY"></span></div>
-        <div class="ctrl-item"><label>ขอบพิมพ์ ซ้าย-ขวา</label><input type="range" id="cfgPrintMarginX" min="4" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valPrintMarginX"></span></div>
-        <div class="ctrl-item"><label>สีวันหยุด (ราชการ/พิเศษ)</label>
-          <div style="display:flex; gap:4px;">
-            <input type="color" id="cfgColorNat" title="National Holiday" oninput="updateDesign()">
-            <input type="color" id="cfgColorSpc" title="Special Holiday" oninput="updateDesign()">
-            <input type="color" id="cfgColorSpt" title="Sport Day" oninput="updateDesign()">
+    <div class="ribbon-body">
+      <!-- แท็บ 1: ฟอนต์ & ขนาดตัวอักษร -->
+      <div class="ribbon-pane active" id="tabFont">
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">รูปแบบฟอนต์ตาราง</div>
+          <div class="ctrl-item">
+            <label>ฟอนต์หลัก</label>
+            <select id="cfgMainFont" onchange="updateDesign()">
+              <option value="'supermarket', Tahoma, sans-serif">supermarket / Tahoma</option>
+              <option value="Tahoma, sans-serif">Tahoma</option>
+              <option value="Calibri, Tahoma, sans-serif">Calibri</option>
+              <option value="'Angsana New', Tahoma, serif">Angsana New</option>
+              <option value="'TH Sarabun New', 'TH SarabunPSK', Tahoma, sans-serif">TH Sarabun</option>
+              <option value="Arial, Tahoma, sans-serif">Arial</option>
+            </select>
           </div>
+          <div class="ctrl-item">
+            <label>รูปแบบตัวเลขวันที่</label>
+            <div class="mini-btn-group">
+              <button class="mini-btn" id="btnDayBold" onclick="toggleDayStyle('bold')"><b>B</b></button>
+              <button class="mini-btn" id="btnDayItalic" onclick="toggleDayStyle('italic')"><i>I</i></button>
+            </div>
+          </div>
+          <div class="ctrl-item">
+            <label>จัดแนว Working Day</label>
+            <div class="mini-btn-group">
+              <button class="mini-btn" id="btnAlignLeft" onclick="setWorkdayAlign('left')">ชิดซ้าย</button>
+              <button class="mini-btn" id="btnAlignCenter" onclick="setWorkdayAlign('center')">กลาง</button>
+              <button class="mini-btn" id="btnAlignRight" onclick="setWorkdayAlign('right')">ขวา</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ขนาดตัวอักษรส่วนหัว</div>
+          <div class="ctrl-item"><label>ชื่อบริษัท</label><input type="range" id="cfgCompanySize" min="24" max="50" oninput="updateDesign()"><span class="ctrl-val" id="valCompanySize"></span></div>
+          <div class="ctrl-item"><label>Calendar 2027</label><input type="range" id="cfgSubtitleSize" min="13" max="26" oninput="updateDesign()"><span class="ctrl-val" id="valSubtitleSize"></span></div>
+          <div class="ctrl-item"><label>ชื่อเดือน (JAN-DEC)</label><input type="range" id="cfgMonthTitleSize" min="10" max="18" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valMonthTitleSize"></span></div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ขนาดตัวอักษรในตาราง</div>
+          <div class="ctrl-item"><label>หัวตาราง (อา–ส)</label><input type="range" id="cfgThThSize" min="8" max="14" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valThThSize"></span></div>
+          <div class="ctrl-item"><label>หัวตาราง (SUN–SAT)</label><input type="range" id="cfgThEnSize" min="7" max="12" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valThEnSize"></span></div>
+          <div class="ctrl-item"><label>ตัวเลขวันที่</label><input type="range" id="cfgDayFont" min="8.5" max="15" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valDayFont"></span></div>
+          <div class="ctrl-item"><label>Working Day</label><input type="range" id="cfgWorkdaySize" min="8" max="14" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valWorkdaySize"></span></div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ขนาดตัวอักษรส่วนล่าง</div>
+          <div class="ctrl-item"><label>รายการวันหยุด</label><input type="range" id="cfgHolListSize" min="6.5" max="10.5" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valHolListSize"></span></div>
+          <div class="ctrl-item"><label>กล่องสรุปตัวเลข</label><input type="range" id="cfgSummarySize" min="8" max="13" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valSummarySize"></span></div>
+          <div class="ctrl-item"><label>ช่องเซ็นชื่อ</label><input type="range" id="cfgSignSize" min="11" max="20" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valSignSize"></span></div>
+        </div>
+      </div>
+
+      <!-- แท็บ 2: ตาราง & ระยะห่าง -->
+      <div class="ribbon-pane" id="tabLayout">
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ระยะห่างตัวเลขวันที่</div>
+          <div class="ctrl-item"><label>ระยะห่างบน-ล่าง (สูงแถว)</label><input type="range" id="cfgRowHeight" min="14" max="25" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valRowHeight"></span></div>
+          <div class="ctrl-item"><label>ช่องไฟตัวเลข (2 หลัก)</label><input type="range" id="cfgDaySpacing" min="-1" max="3" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valDaySpacing"></span></div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ระยะห่างระหว่างเดือน</div>
+          <div class="ctrl-item"><label>ช่องว่างซ้าย-ขวา</label><input type="range" id="cfgMonthGapX" min="6" max="30" oninput="updateDesign()"><span class="ctrl-val" id="valMonthGapX"></span></div>
+          <div class="ctrl-item"><label>ช่องว่างบน-ล่าง</label><input type="range" id="cfgMonthGapY" min="2" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valMonthGapY"></span></div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">โครงสร้างแถวตาราง</div>
+          <div class="ctrl-item" style="margin-top:4px;">
+            <label for="cfgEqualRows" style="cursor:pointer;">กรอบเท่ากันทุกเดือน (6 แถว)</label>
+            <input type="checkbox" id="cfgEqualRows" onchange="updateDesign(true)" style="width:16px;height:16px;cursor:pointer;accent-color:#107c41;">
+          </div>
+          <div style="font-size:10px;color:#64748b;margin-top:4px;">*ติ๊กถูกเพื่อให้กรอบทั้ง 12 เดือนสูงเท่ากันเป๊ะ</div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ระยะห่างส่วนล่าง</div>
+          <div class="ctrl-item"><label>ช่องว่างก่อนรายการวันหยุด</label><input type="range" id="cfgFooterGap" min="0" max="30" oninput="updateDesign()"><span class="ctrl-val" id="valFooterGap"></span></div>
+          <div class="ctrl-item"><label>ช่องว่างเหนือช่องเซ็นชื่อ</label><input type="range" id="cfgSignMargin" min="4" max="36" oninput="updateDesign()"><span class="ctrl-val" id="valSignMargin"></span></div>
+        </div>
+      </div>
+
+      <!-- แท็บ 3: เส้นขอบ & สี -->
+      <div class="ribbon-pane" id="tabStyle">
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">เส้นกรอบนอกแต่ละเดือน</div>
+          <div class="ctrl-item"><label>ความหนากรอบนอก</label><input type="range" id="cfgMonthBorderWidth" min="0" max="3" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valMonthBorderWidth"></span></div>
+          <div class="ctrl-item"><label>สีกรอบนอก</label><input type="color" id="cfgMonthBorderColor" oninput="updateDesign()"></div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">เส้นตารางด้านใน (Gridlines)</div>
+          <div class="ctrl-item"><label>ความหนาเส้นในช่อง</label><input type="range" id="cfgInnerBorderWidth" min="0" max="1.5" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valInnerBorderWidth"></span></div>
+          <div class="ctrl-item"><label>สีเส้นตารางด้านใน</label><input type="color" id="cfgInnerBorderColor" oninput="updateDesign()"></div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">สีแถบหัว &amp; ตัวอักษร</div>
+          <div class="ctrl-item"><label>แถบคาด Calendar</label><input type="color" id="cfgSubtitleBg" oninput="updateDesign()"></div>
+          <div class="ctrl-item"><label>แถบหัวตารางเดือน</label><input type="color" id="cfgMonthHeaderBg" oninput="updateDesign()"></div>
+          <div class="ctrl-item"><label>สีตัวเลขวันปกติ</label><input type="color" id="cfgDayTextColor" oninput="updateDesign()"></div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">สีวันอาทิตย์ &amp; วันหยุด</div>
+          <div class="ctrl-item"><label>ตัวเลขวันอาทิตย์ / อา.</label>
+            <div style="display:flex;gap:4px;">
+              <input type="color" id="cfgSunColor" title="สีตัวเลขวันอาทิตย์" oninput="updateDesign()">
+              <input type="color" id="cfgSunHeaderColor" title="สีหัวตาราง อา./SUN" oninput="updateDesign()">
+            </div>
+          </div>
+          <div class="ctrl-item"><label>ราชการ / พิเศษ / กีฬา</label>
+            <div style="display:flex;gap:4px;">
+              <input type="color" id="cfgColorNat" title="National Holiday" oninput="updateDesign()">
+              <input type="color" id="cfgColorSpc" title="Special Holiday" oninput="updateDesign()">
+              <input type="color" id="cfgColorSpt" title="Sport Day" oninput="updateDesign()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- แท็บ 4: โลโก้ & ตั้งค่าหน้าพิมพ์ A4 -->
+      <div class="ribbon-pane" id="tabPrint">
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ขนาด &amp; พื้นหลังโลโก้</div>
+          <div class="ctrl-item"><label>ขนาดโลโก้</label><input type="range" id="cfgLogoSize" min="45" max="130" oninput="updateDesign()"><span class="ctrl-val" id="valLogoSize"></span></div>
+          <div class="ctrl-item">
+            <label for="cfgLogoBlend" style="cursor:pointer;">ตัดพื้นขาวโลโก้อัตโนมัติ</label>
+            <input type="checkbox" id="cfgLogoBlend" onchange="updateDesign()" style="width:16px;height:16px;cursor:pointer;accent-color:#107c41;">
+          </div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ตำแหน่งโลโก้</div>
+          <div class="ctrl-item"><label>เลื่อน บน–ล่าง</label><input type="range" id="cfgLogoTop" min="-25" max="25" oninput="updateDesign()"><span class="ctrl-val" id="valLogoTop"></span></div>
+          <div class="ctrl-item"><label>เลื่อน ซ้าย–ขวา</label><input type="range" id="cfgLogoLeft" min="0" max="80" oninput="updateDesign()"><span class="ctrl-val" id="valLogoLeft"></span></div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ระยะขอบกระดาษตอนพิมพ์</div>
+          <div class="ctrl-item"><label>ขอบ บน–ล่าง</label><input type="range" id="cfgPrintMarginY" min="3" max="18" oninput="updateDesign()"><span class="ctrl-val" id="valPrintMarginY"></span></div>
+          <div class="ctrl-item"><label>ขอบ ซ้าย–ขวา</label><input type="range" id="cfgPrintMarginX" min="3" max="22" oninput="updateDesign()"><span class="ctrl-val" id="valPrintMarginX"></span></div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">ย่อ–ขยายตอนสั่งพิมพ์ A4</div>
+          <div class="ctrl-item"><label>Print Scale (%)</label><input type="range" id="cfgPrintScale" min="80" max="110" oninput="updateDesign()"><span class="ctrl-val" id="valPrintScale"></span></div>
+          <div style="font-size:10px;color:#64748b;margin-top:4px;">*หากล้นหน้า 2 ให้เลื่อนลดเหลือ 92–96%</div>
         </div>
       </div>
     </div>
@@ -573,26 +782,51 @@
   const DAYS_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
   const DEFAULT_DESIGN = {
+    mainFont: "'supermarket', Tahoma, sans-serif",
+    companySize: 38,
+    subtitleSize: 19,
+    monthTitleSize: 13,
+    thThSize: 10,
+    thEnSize: 8.5,
+    dayFont: 11,
+    dayBold: true,
+    dayItalic: false,
+    daySpacing: 0,
+    workdaySize: 10,
+    workdayAlign: "center",
+    holListSize: 7.5,
+    summarySize: 10,
+    signSize: 15.5,
+
     logoSize: 84,
     logoTop: -2,
     logoLeft: 14,
-    companySize: 38,
-    rowHeight: 19,
-    dayFont: 11,
-    monthGapY: 9,
+    logoBlend: true,
+
+    rowHeight: 17.5,
+    monthGapX: 16,
+    monthGapY: 7,
+    equalRows: true,
     footerGap: 8,
+    signMargin: 14,
+
     monthBorderWidth: 1.5,
     monthBorderColor: "#000000",
-    signMargin: 16,
-    printMarginY: 8,
-    printMarginX: 10,
+    innerBorderWidth: 0,
+    innerBorderColor: "#cbd5e1",
+
     subtitleBg: "#F2EFF7",
     monthHeaderBg: "#E3DCEB",
+    dayTextColor: "#000000",
     sunColor: "#dc2626",
     sunHeaderColor: "#000000",
     colorNat: "#CFFF9F",
     colorSpc: "#DDD3F1",
-    colorSpt: "#FEF08A"
+    colorSpt: "#FEF08A",
+
+    printMarginY: 8,
+    printMarginX: 10,
+    printScale: 100
   };
 
   let design = { ...DEFAULT_DESIGN };
@@ -602,103 +836,221 @@
   let editingKey = null;
 
   try {
-    const saved = localStorage.getItem('clc_calendar_design');
+    const saved = localStorage.getItem('clc_calendar_design_v2');
     if (saved) design = { ...DEFAULT_DESIGN, ...JSON.parse(saved) };
   } catch (e) {}
 
+  function switchTab(tabId, btnEl) {
+    document.querySelectorAll('.ribbon-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.ribbon-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btnEl.classList.add('active');
+  }
+
+  function toggleDayStyle(type) {
+    if (type === 'bold') design.dayBold = !design.dayBold;
+    if (type === 'italic') design.dayItalic = !design.dayItalic;
+    syncDesignInputs();
+    applyDesign();
+    saveDesignLocal();
+  }
+
+  function setWorkdayAlign(align) {
+    design.workdayAlign = align;
+    syncDesignInputs();
+    applyDesign();
+    saveDesignLocal();
+  }
+
+  function saveDesignLocal() {
+    try { localStorage.setItem('clc_calendar_design_v2', JSON.stringify(design)); } catch (e) {}
+  }
+
   function syncDesignInputs() {
+    document.getElementById('cfgMainFont').value = design.mainFont;
+    document.getElementById('cfgCompanySize').value = design.companySize;
+    document.getElementById('cfgSubtitleSize').value = design.subtitleSize;
+    document.getElementById('cfgMonthTitleSize').value = design.monthTitleSize;
+    document.getElementById('cfgThThSize').value = design.thThSize;
+    document.getElementById('cfgThEnSize').value = design.thEnSize;
+    document.getElementById('cfgDayFont').value = design.dayFont;
+    document.getElementById('cfgDaySpacing').value = design.daySpacing;
+    document.getElementById('cfgWorkdaySize').value = design.workdaySize;
+    document.getElementById('cfgHolListSize').value = design.holListSize;
+    document.getElementById('cfgSummarySize').value = design.summarySize;
+    document.getElementById('cfgSignSize').value = design.signSize;
+
+    document.getElementById('btnDayBold').classList.toggle('active', design.dayBold);
+    document.getElementById('btnDayItalic').classList.toggle('active', design.dayItalic);
+    document.getElementById('btnAlignLeft').classList.toggle('active', design.workdayAlign === 'left');
+    document.getElementById('btnAlignCenter').classList.toggle('active', design.workdayAlign === 'center');
+    document.getElementById('btnAlignRight').classList.toggle('active', design.workdayAlign === 'right');
+
     document.getElementById('cfgLogoSize').value = design.logoSize;
     document.getElementById('cfgLogoTop').value = design.logoTop;
     document.getElementById('cfgLogoLeft').value = design.logoLeft;
-    document.getElementById('cfgCompanySize').value = design.companySize;
+    document.getElementById('cfgLogoBlend').checked = design.logoBlend;
+
     document.getElementById('cfgRowHeight').value = design.rowHeight;
-    document.getElementById('cfgDayFont').value = design.dayFont;
+    document.getElementById('cfgMonthGapX').value = design.monthGapX;
     document.getElementById('cfgMonthGapY').value = design.monthGapY;
+    document.getElementById('cfgEqualRows').checked = design.equalRows;
     document.getElementById('cfgFooterGap').value = design.footerGap;
+    document.getElementById('cfgSignMargin').value = design.signMargin;
+
     document.getElementById('cfgMonthBorderWidth').value = design.monthBorderWidth;
     document.getElementById('cfgMonthBorderColor').value = design.monthBorderColor;
-    document.getElementById('cfgSignMargin').value = design.signMargin;
-    document.getElementById('cfgPrintMarginY').value = design.printMarginY;
-    document.getElementById('cfgPrintMarginX').value = design.printMarginX;
+    document.getElementById('cfgInnerBorderWidth').value = design.innerBorderWidth;
+    document.getElementById('cfgInnerBorderColor').value = design.innerBorderColor;
+
     document.getElementById('cfgSubtitleBg').value = design.subtitleBg;
     document.getElementById('cfgMonthHeaderBg').value = design.monthHeaderBg;
+    document.getElementById('cfgDayTextColor').value = design.dayTextColor;
     document.getElementById('cfgSunColor').value = design.sunColor;
     document.getElementById('cfgSunHeaderColor').value = design.sunHeaderColor;
     document.getElementById('cfgColorNat').value = design.colorNat;
     document.getElementById('cfgColorSpc').value = design.colorSpc;
     document.getElementById('cfgColorSpt').value = design.colorSpt;
+
+    document.getElementById('cfgPrintMarginY').value = design.printMarginY;
+    document.getElementById('cfgPrintMarginX').value = design.printMarginX;
+    document.getElementById('cfgPrintScale').value = design.printScale;
   }
 
   function applyDesign() {
     const r = document.documentElement.style;
+    r.setProperty('--main-font', design.mainFont);
+    r.setProperty('--company-size', design.companySize + 'px');
+    r.setProperty('--subtitle-size', design.subtitleSize + 'px');
+    r.setProperty('--month-title-size', design.monthTitleSize + 'px');
+    r.setProperty('--th-th-size', design.thThSize + 'px');
+    r.setProperty('--th-en-size', design.thEnSize + 'px');
+    r.setProperty('--day-font-size', design.dayFont + 'px');
+    r.setProperty('--day-font-weight', design.dayBold ? '700' : '400');
+    r.setProperty('--day-font-style', design.dayItalic ? 'italic' : 'normal');
+    r.setProperty('--day-letter-spacing', design.daySpacing + 'px');
+    r.setProperty('--workday-size', design.workdaySize + 'px');
+    r.setProperty('--workday-align', design.workdayAlign);
+    r.setProperty('--hol-list-size', design.holListSize + 'px');
+    r.setProperty('--summary-size', design.summarySize + 'px');
+    r.setProperty('--sign-size', design.signSize + 'px');
+
     r.setProperty('--logo-size', design.logoSize + 'px');
     r.setProperty('--logo-top', design.logoTop + 'px');
     r.setProperty('--logo-left', design.logoLeft + 'px');
-    r.setProperty('--company-size', design.companySize + 'px');
+    r.setProperty('--logo-blend', design.logoBlend ? 'multiply' : 'normal');
+
     r.setProperty('--row-height', design.rowHeight + 'px');
-    r.setProperty('--day-font-size', design.dayFont + 'px');
+    r.setProperty('--month-gap-x', design.monthGapX + 'px');
     r.setProperty('--month-gap-y', design.monthGapY + 'px');
     r.setProperty('--footer-gap-top', design.footerGap + 'px');
+    r.setProperty('--sign-margin-top', design.signMargin + 'px');
+
     r.setProperty('--month-border-width', design.monthBorderWidth + 'px');
     r.setProperty('--month-border-color', design.monthBorderColor);
-    r.setProperty('--sign-margin-top', design.signMargin + 'px');
+    r.setProperty('--inner-border-width', design.innerBorderWidth + 'px');
+    r.setProperty('--inner-border-color', design.innerBorderColor);
+
     r.setProperty('--subtitle-bg', design.subtitleBg);
     r.setProperty('--month-header-bg', design.monthHeaderBg);
+    r.setProperty('--day-text-color', design.dayTextColor);
     r.setProperty('--sun-color', design.sunColor);
     r.setProperty('--sun-header-color', design.sunHeaderColor);
     r.setProperty('--color-national', design.colorNat);
     r.setProperty('--color-special', design.colorSpc);
     r.setProperty('--color-sport', design.colorSpt);
+    r.setProperty('--print-scale', (design.printScale / 100).toFixed(2));
 
     document.getElementById('dynamicPageStyle').textContent =
       `@page { size: A4 landscape; margin: ${design.printMarginY}mm ${design.printMarginX}mm; }`;
 
+    document.getElementById('valCompanySize').textContent = design.companySize + 'px';
+    document.getElementById('valSubtitleSize').textContent = design.subtitleSize + 'px';
+    document.getElementById('valMonthTitleSize').textContent = design.monthTitleSize + 'px';
+    document.getElementById('valThThSize').textContent = design.thThSize + 'px';
+    document.getElementById('valThEnSize').textContent = design.thEnSize + 'px';
+    document.getElementById('valDayFont').textContent = design.dayFont + 'px';
+    document.getElementById('valDaySpacing').textContent = design.daySpacing + 'px';
+    document.getElementById('valWorkdaySize').textContent = design.workdaySize + 'px';
+    document.getElementById('valHolListSize').textContent = design.holListSize + 'px';
+    document.getElementById('valSummarySize').textContent = design.summarySize + 'px';
+    document.getElementById('valSignSize').textContent = design.signSize + 'px';
+
     document.getElementById('valLogoSize').textContent = design.logoSize + 'px';
     document.getElementById('valLogoTop').textContent = design.logoTop + 'px';
     document.getElementById('valLogoLeft').textContent = design.logoLeft + 'px';
-    document.getElementById('valCompanySize').textContent = design.companySize + 'px';
+
     document.getElementById('valRowHeight').textContent = design.rowHeight + 'px';
-    document.getElementById('valDayFont').textContent = design.dayFont + 'px';
+    document.getElementById('valMonthGapX').textContent = design.monthGapX + 'px';
     document.getElementById('valMonthGapY').textContent = design.monthGapY + 'px';
     document.getElementById('valFooterGap').textContent = design.footerGap + 'px';
-    document.getElementById('valMonthBorderWidth').textContent = design.monthBorderWidth + 'px';
     document.getElementById('valSignMargin').textContent = design.signMargin + 'px';
+
+    document.getElementById('valMonthBorderWidth').textContent = design.monthBorderWidth + 'px';
+    document.getElementById('valInnerBorderWidth').textContent = design.innerBorderWidth + 'px';
+
     document.getElementById('valPrintMarginY').textContent = design.printMarginY + 'mm';
     document.getElementById('valPrintMarginX').textContent = design.printMarginX + 'mm';
+    document.getElementById('valPrintScale').textContent = design.printScale + '%';
   }
 
-  function updateDesign() {
+  function updateDesign(needRerender = false) {
     design = {
+      ...design,
+      mainFont: document.getElementById('cfgMainFont').value,
+      companySize: Number(document.getElementById('cfgCompanySize').value),
+      subtitleSize: Number(document.getElementById('cfgSubtitleSize').value),
+      monthTitleSize: Number(document.getElementById('cfgMonthTitleSize').value),
+      thThSize: Number(document.getElementById('cfgThThSize').value),
+      thEnSize: Number(document.getElementById('cfgThEnSize').value),
+      dayFont: Number(document.getElementById('cfgDayFont').value),
+      daySpacing: Number(document.getElementById('cfgDaySpacing').value),
+      workdaySize: Number(document.getElementById('cfgWorkdaySize').value),
+      holListSize: Number(document.getElementById('cfgHolListSize').value),
+      summarySize: Number(document.getElementById('cfgSummarySize').value),
+      signSize: Number(document.getElementById('cfgSignSize').value),
+
       logoSize: Number(document.getElementById('cfgLogoSize').value),
       logoTop: Number(document.getElementById('cfgLogoTop').value),
       logoLeft: Number(document.getElementById('cfgLogoLeft').value),
-      companySize: Number(document.getElementById('cfgCompanySize').value),
+      logoBlend: document.getElementById('cfgLogoBlend').checked,
+
       rowHeight: Number(document.getElementById('cfgRowHeight').value),
-      dayFont: Number(document.getElementById('cfgDayFont').value),
+      monthGapX: Number(document.getElementById('cfgMonthGapX').value),
       monthGapY: Number(document.getElementById('cfgMonthGapY').value),
+      equalRows: document.getElementById('cfgEqualRows').checked,
       footerGap: Number(document.getElementById('cfgFooterGap').value),
+      signMargin: Number(document.getElementById('cfgSignMargin').value),
+
       monthBorderWidth: Number(document.getElementById('cfgMonthBorderWidth').value),
       monthBorderColor: document.getElementById('cfgMonthBorderColor').value,
-      signMargin: Number(document.getElementById('cfgSignMargin').value),
-      printMarginY: Number(document.getElementById('cfgPrintMarginY').value),
-      printMarginX: Number(document.getElementById('cfgPrintMarginX').value),
+      innerBorderWidth: Number(document.getElementById('cfgInnerBorderWidth').value),
+      innerBorderColor: document.getElementById('cfgInnerBorderColor').value,
+
       subtitleBg: document.getElementById('cfgSubtitleBg').value,
       monthHeaderBg: document.getElementById('cfgMonthHeaderBg').value,
+      dayTextColor: document.getElementById('cfgDayTextColor').value,
       sunColor: document.getElementById('cfgSunColor').value,
       sunHeaderColor: document.getElementById('cfgSunHeaderColor').value,
       colorNat: document.getElementById('cfgColorNat').value,
       colorSpc: document.getElementById('cfgColorSpc').value,
-      colorSpt: document.getElementById('cfgColorSpt').value
+      colorSpt: document.getElementById('cfgColorSpt').value,
+
+      printMarginY: Number(document.getElementById('cfgPrintMarginY').value),
+      printMarginX: Number(document.getElementById('cfgPrintMarginX').value),
+      printScale: Number(document.getElementById('cfgPrintScale').value)
     };
     applyDesign();
-    try { localStorage.setItem('clc_calendar_design', JSON.stringify(design)); } catch (e) {}
+    saveDesignLocal();
+    if (needRerender) renderCalendar();
   }
 
   function resetDesign() {
     design = { ...DEFAULT_DESIGN };
     syncDesignInputs();
     applyDesign();
-    try { localStorage.removeItem('clc_calendar_design'); } catch (e) {}
+    renderCalendar();
+    try { localStorage.removeItem('clc_calendar_design_v2'); } catch (e) {}
   }
 
   function toggleDesignPanel() {
@@ -822,7 +1174,7 @@
       let monthWork = 0;
 
       const needSixRows = (firstDay + daysInMonth) > 36;
-      const totalRows = 6;
+      const totalRows = design.equalRows ? 6 : (needSixRows ? 6 : 5);
       const cells = Array(totalRows * 7).fill(null).map(() => []);
 
       for (let d = 1; d <= daysInMonth; d++) {
