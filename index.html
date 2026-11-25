@@ -196,11 +196,35 @@
     .ctrl-item:last-child { margin-bottom: 0; }
     .ctrl-item label { font-size: 11px; color: #334155; white-space: nowrap; }
     .ctrl-item input[type="range"] { width: 80px; cursor: pointer; accent-color: #107c41; }
-    .ctrl-item input[type="color"] { width: 32px; height: 22px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; padding: 0; }
+    .ctrl-item input[type="color"] { width: 26px; height: 22px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; padding: 0; flex-shrink: 0; }
     .ctrl-item select {
       padding: 3px 5px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; font-family: Tahoma, sans-serif; max-width: 130px;
     }
     .ctrl-val { font-size: 10.5px; color: #0f172a; font-weight: bold; min-width: 34px; text-align: right; }
+
+    /* กล่องสี + ช่องพิมพ์ HEX code */
+    .color-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .hex-input {
+      width: 64px;
+      height: 22px;
+      padding: 0 5px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #0f172a;
+      background: #f8fafc;
+    }
+    .hex-input:focus {
+      outline: none;
+      border-color: #107c41;
+      background: #fff;
+    }
 
     .mini-btn-group { display: flex; gap: 3px; }
     .mini-btn {
@@ -660,41 +684,53 @@
         </div>
       </div>
 
-      <!-- แท็บ 3: เส้นขอบ & สี -->
+      <!-- แท็บ 3: เส้นขอบ & สี (พร้อมช่องใส่ CODE สี HEX ทุกจุด) -->
       <div class="ribbon-pane" id="tabStyle">
         <div class="ctrl-group">
-          <div class="ctrl-group-title">เส้นกรอบนอกแต่ละเดือน</div>
-          <div class="ctrl-item"><label>ความหนากรอบนอก</label><input type="range" id="cfgMonthBorderWidth" min="0" max="3" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valMonthBorderWidth"></span></div>
-          <div class="ctrl-item"><label>สีกรอบนอก</label><input type="color" id="cfgMonthBorderColor" oninput="updateDesign()"></div>
-        </div>
-
-        <div class="ctrl-group">
-          <div class="ctrl-group-title">เส้นตารางด้านใน (Gridlines)</div>
-          <div class="ctrl-item"><label>ความหนาเส้นในช่อง</label><input type="range" id="cfgInnerBorderWidth" min="0" max="1.5" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valInnerBorderWidth"></span></div>
-          <div class="ctrl-item"><label>สีเส้นตารางด้านใน</label><input type="color" id="cfgInnerBorderColor" oninput="updateDesign()"></div>
+          <div class="ctrl-group-title">เส้นกรอบนอก &amp; เส้นตาราง</div>
+          <div class="ctrl-item"><label>หนากรอบนอก</label><input type="range" id="cfgMonthBorderWidth" min="0" max="3" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valMonthBorderWidth"></span></div>
+          <div class="ctrl-item"><label>สีกรอบนอก</label>
+            <div class="color-wrap"><input type="color" id="cfgMonthBorderColor" oninput="updateDesign()"><input type="text" class="hex-input" id="hexMonthBorderColor" maxlength="7" oninput="onHexInput(this,'cfgMonthBorderColor')"></div>
+          </div>
+          <div class="ctrl-item"><label>หนาเส้นในช่อง</label><input type="range" id="cfgInnerBorderWidth" min="0" max="1.5" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valInnerBorderWidth"></span></div>
+          <div class="ctrl-item"><label>สีเส้นในช่อง</label>
+            <div class="color-wrap"><input type="color" id="cfgInnerBorderColor" oninput="updateDesign()"><input type="text" class="hex-input" id="hexInnerBorderColor" maxlength="7" oninput="onHexInput(this,'cfgInnerBorderColor')"></div>
+          </div>
         </div>
 
         <div class="ctrl-group">
           <div class="ctrl-group-title">สีแถบหัว &amp; ตัวอักษร</div>
-          <div class="ctrl-item"><label>แถบคาด Calendar</label><input type="color" id="cfgSubtitleBg" oninput="updateDesign()"></div>
-          <div class="ctrl-item"><label>แถบหัวตารางเดือน</label><input type="color" id="cfgMonthHeaderBg" oninput="updateDesign()"></div>
-          <div class="ctrl-item"><label>สีตัวเลขวันปกติ</label><input type="color" id="cfgDayTextColor" oninput="updateDesign()"></div>
+          <div class="ctrl-item"><label>แถบคาด Calendar</label>
+            <div class="color-wrap"><input type="color" id="cfgSubtitleBg" oninput="updateDesign()"><input type="text" class="hex-input" id="hexSubtitleBg" maxlength="7" oninput="onHexInput(this,'cfgSubtitleBg')"></div>
+          </div>
+          <div class="ctrl-item"><label>แถบหัวตารางเดือน</label>
+            <div class="color-wrap"><input type="color" id="cfgMonthHeaderBg" oninput="updateDesign()"><input type="text" class="hex-input" id="hexMonthHeaderBg" maxlength="7" oninput="onHexInput(this,'cfgMonthHeaderBg')"></div>
+          </div>
+          <div class="ctrl-item"><label>ตัวเลขวันปกติ</label>
+            <div class="color-wrap"><input type="color" id="cfgDayTextColor" oninput="updateDesign()"><input type="text" class="hex-input" id="hexDayTextColor" maxlength="7" oninput="onHexInput(this,'cfgDayTextColor')"></div>
+          </div>
         </div>
 
         <div class="ctrl-group">
-          <div class="ctrl-group-title">สีวันอาทิตย์ &amp; วันหยุด</div>
-          <div class="ctrl-item"><label>ตัวเลขวันอาทิตย์ / อา.</label>
-            <div style="display:flex;gap:4px;">
-              <input type="color" id="cfgSunColor" title="สีตัวเลขวันอาทิตย์" oninput="updateDesign()">
-              <input type="color" id="cfgSunHeaderColor" title="สีหัวตาราง อา./SUN" oninput="updateDesign()">
-            </div>
+          <div class="ctrl-group-title">สีวันอาทิตย์</div>
+          <div class="ctrl-item"><label>ตัวเลขวันอาทิตย์</label>
+            <div class="color-wrap"><input type="color" id="cfgSunColor" oninput="updateDesign()"><input type="text" class="hex-input" id="hexSunColor" maxlength="7" oninput="onHexInput(this,'cfgSunColor')"></div>
           </div>
-          <div class="ctrl-item"><label>ราชการ / พิเศษ / กีฬา</label>
-            <div style="display:flex;gap:4px;">
-              <input type="color" id="cfgColorNat" title="National Holiday" oninput="updateDesign()">
-              <input type="color" id="cfgColorSpc" title="Special Holiday" oninput="updateDesign()">
-              <input type="color" id="cfgColorSpt" title="Sport Day" oninput="updateDesign()">
-            </div>
+          <div class="ctrl-item"><label>หัวตาราง อา./SUN</label>
+            <div class="color-wrap"><input type="color" id="cfgSunHeaderColor" oninput="updateDesign()"><input type="text" class="hex-input" id="hexSunHeaderColor" maxlength="7" oninput="onHexInput(this,'cfgSunHeaderColor')"></div>
+          </div>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-group-title">สีวันหยุด (ใส่โค้ดสีได้)</div>
+          <div class="ctrl-item"><label>วันหยุดราชการ</label>
+            <div class="color-wrap"><input type="color" id="cfgColorNat" oninput="updateDesign()"><input type="text" class="hex-input" id="hexColorNat" maxlength="7" oninput="onHexInput(this,'cfgColorNat')"></div>
+          </div>
+          <div class="ctrl-item"><label>วันหยุดพิเศษ</label>
+            <div class="color-wrap"><input type="color" id="cfgColorSpc" oninput="updateDesign()"><input type="text" class="hex-input" id="hexColorSpc" maxlength="7" oninput="onHexInput(this,'cfgColorSpc')"></div>
+          </div>
+          <div class="ctrl-item"><label>วันกีฬา (Sport)</label>
+            <div class="color-wrap"><input type="color" id="cfgColorSpt" oninput="updateDesign()"><input type="text" class="hex-input" id="hexColorSpt" maxlength="7" oninput="onHexInput(this,'cfgColorSpt')"></div>
           </div>
         </div>
       </div>
@@ -854,6 +890,36 @@
     if (saved) design = { ...DEFAULT_DESIGN, ...JSON.parse(saved) };
   } catch (e) {}
 
+  function onHexInput(hexEl, colorId) {
+    let v = hexEl.value.trim();
+    if (v && !v.startsWith('#')) v = '#' + v;
+    if (/^#[0-9A-Fa-f]{6}$/.test(v)) {
+      document.getElementById(colorId).value = v;
+      updateDesign();
+    }
+  }
+
+  function syncHexBoxes() {
+    const pairs = [
+      ['cfgMonthBorderColor', 'hexMonthBorderColor'],
+      ['cfgInnerBorderColor', 'hexInnerBorderColor'],
+      ['cfgSubtitleBg', 'hexSubtitleBg'],
+      ['cfgMonthHeaderBg', 'hexMonthHeaderBg'],
+      ['cfgDayTextColor', 'hexDayTextColor'],
+      ['cfgSunColor', 'hexSunColor'],
+      ['cfgSunHeaderColor', 'hexSunHeaderColor'],
+      ['cfgColorNat', 'hexColorNat'],
+      ['cfgColorSpc', 'hexColorSpc'],
+      ['cfgColorSpt', 'hexColorSpt']
+    ];
+    pairs.forEach(([cId, hId]) => {
+      const hexEl = document.getElementById(hId);
+      if (hexEl && document.activeElement !== hexEl) {
+        hexEl.value = document.getElementById(cId).value.toUpperCase();
+      }
+    });
+  }
+
   function switchTab(tabId, btnEl) {
     document.querySelectorAll('.ribbon-pane').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.ribbon-tab').forEach(b => b.classList.remove('active'));
@@ -930,6 +996,7 @@
     document.getElementById('cfgPrintMarginY').value = design.printMarginY;
     document.getElementById('cfgPrintMarginX').value = design.printMarginX;
     document.getElementById('cfgPrintScale').value = design.printScale;
+    syncHexBoxes();
   }
 
   function applyDesign() {
@@ -1009,6 +1076,7 @@
     document.getElementById('valPrintMarginY').textContent = design.printMarginY + 'mm';
     document.getElementById('valPrintMarginX').textContent = design.printMarginX + 'mm';
     document.getElementById('valPrintScale').textContent = design.printScale + '%';
+    syncHexBoxes();
   }
 
   function updateDesign(needRerender = false) {
