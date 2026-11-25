@@ -171,7 +171,25 @@
     /* สีวันหยุดตรงตามต้นฉบับ */
     .bg-national { background-color: #CFFF9F !important; }
     .bg-special  { background-color: #DDD3F1 !important; }
-    .bg-sport    { background-color: #FEF08A !important; }
+    .bg-sport    { background-color: #FEF08A !important; }.split-cell {
+      position: relative;
+      padding: 0 !important;
+      background-image: linear-gradient(to bottom right, transparent calc(50% - 0.6px), #334155, transparent calc(50% + 0.6px));
+    }
+    .split-top {
+      position: absolute;
+      top: 1px;
+      left: 2px;
+      font-size: 8.5px;
+      line-height: 1;
+    }
+    .split-bottom {
+      position: absolute;
+      bottom: 1px;
+      right: 2px;
+      font-size: 8.5px;
+      line-height: 1;
+    }
 
     .workday-row {
       font-family: 'supermarket', Tahoma, sans-serif;
@@ -530,8 +548,11 @@
             const h = holidays[k];
             const bgCls = h ? (h.type === 'national' ? 'bg-national' : h.type === 'special' ? 'bg-special' : 'bg-sport') : '';
             const sunCls = c === 0 ? 'sun-col' : '';
-            const text = daysArr.join('  ');
-            rowsHtml += `<td class="day-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${k}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${text}</td>`;
+            if (daysArr.length === 2) {
+              rowsHtml += `<td class="day-cell split-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${k}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}"><span class="split-top">${daysArr[0]}</span><span class="split-bottom">${daysArr[1]}</span></td>`;
+            } else {
+              rowsHtml += `<td class="day-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${k}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${daysArr[0]}</td>`;
+            }
           }
         }
         rowsHtml += '</tr>';
