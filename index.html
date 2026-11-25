@@ -4,7 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Company Annual Calendar Generator</title>
+  <style id="dynamicPageStyle">
+    @page { size: A4 landscape; margin: 8mm 10mm; }
+  </style>
   <style>
+    :root {
+      --logo-size: 84px;
+      --logo-top: -2px;
+      --logo-left: 14px;
+      --company-size: 38px;
+      --subtitle-bg: #F2EFF7;
+      --month-header-bg: #E3DCEB;
+      --row-height: 19px;
+      --day-font-size: 11px;
+      --month-gap-y: 9px;
+      --footer-gap-top: 8px;
+      --sign-margin-top: 16px;
+      --sun-color: #dc2626;
+      --sun-header-color: #000000;
+      --color-national: #CFFF9F;
+      --color-special: #DDD3F1;
+      --color-sport: #FEF08A;
+    }
+
     @font-face {
       font-family: 'CLC Logo';
       src: local('CLC Logo'), url('CLCLogo.ttf') format('truetype');
@@ -25,27 +47,27 @@
 
     /* แผงควบคุมด้านบน (ซ่อนอัตโนมัติเวลาสั่งพิมพ์ PDF) */
     .toolbar {
-      max-width: 1120px;
-      margin: 0 auto 14px auto;
+      max-width: 1122px;
+      margin: 0 auto 10px auto;
       background: #1e293b;
       color: #fff;
-      padding: 12px 16px;
+      padding: 11px 15px;
       border-radius: 12px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
       justify-content: space-between;
       font-family: Tahoma, sans-serif;
       font-size: 13px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    .toolbar-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar-group { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
     .toolbar select, .toolbar button, .toolbar label.btn {
-      padding: 6px 11px;
+      padding: 6px 10px;
       border-radius: 6px;
       border: none;
-      font-size: 12.5px;
+      font-size: 12px;
       cursor: pointer;
       font-family: Tahoma, sans-serif;
     }
@@ -55,24 +77,77 @@
     .btn-purple { background: #8b5cf6; color: #fff; font-weight: bold; }
     .btn-green { background: #10b981; color: #fff; font-weight: bold; }
     .btn-amber { background: #f59e0b; color: #000; font-weight: bold; }
+    .btn-pink { background: #ec4899; color: #fff; font-weight: bold; }
     .btn-slate { background: #475569; color: #fff; }
     .mode-active { outline: 2px solid #fde047; }
 
-    /* หน้ากระดาษ A4 แนวนอน สมดุลเหมือนต้นฉบับ */
+    /* แผงปรับแต่งฟอร์ม (เปิด/ปิดได้เอง ไม่ต้องแก้โค้ด) */
+    .design-panel {
+      display: none;
+      max-width: 1122px;
+      margin: 0 auto 14px auto;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: Tahoma, sans-serif;
+      font-size: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .design-panel.open { display: block; }
+    .design-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .design-header h4 { font-size: 13.5px; color: #0f172a; }
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px 16px;
+    }
+    .ctrl-group {
+      background: #f8fafc;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .ctrl-group-title {
+      font-weight: bold;
+      color: #334155;
+      margin-bottom: 6px;
+      font-size: 11.5px;
+    }
+    .ctrl-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+    .ctrl-item:last-child { margin-bottom: 0; }
+    .ctrl-item label { font-size: 11px; color: #475569; white-space: nowrap; }
+    .ctrl-item input[type="range"] { width: 88px; cursor: pointer; }
+    .ctrl-item input[type="color"] { width: 32px; height: 22px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; padding: 0; }
+    .ctrl-val { font-size: 10.5px; color: #0f172a; font-weight: bold; min-width: 34px; text-align: right; }
+
+    /* หน้ากระดาษ A4 แนวนอน */
     .a4-sheet {
       width: 297mm;
-      height: 205mm;
+      min-height: 205mm;
       margin: 0 auto;
       background: #fff;
       padding: 8mm 10mm 7mm 10mm;
       box-shadow: 0 6px 24px rgba(0,0,0,0.12);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
+      justify-content: flex-start;
     }
 
-    /* ส่วนหัว: โลโก้ใหญ่ (ตัดพื้นขาวแนบสนิท) + ชื่อบริษัท + แถบสีม่วงอ่อนคาดยาวด้านหลังโลโก้ */
+    /* ส่วนหัว: โลโก้ + ชื่อบริษัท + แถบสีม่วงอ่อนคาดยาวด้านหลังโลโก้ */
     .cal-header {
       position: relative;
       margin-bottom: 8px;
@@ -80,18 +155,19 @@
     }
     .logo-box {
       position: absolute;
-      left: 16px;
-      top: 0;
+      left: var(--logo-left);
+      top: var(--logo-top);
       z-index: 2;
-      height: 74px;
+      height: var(--logo-size);
       display: flex;
       align-items: center;
       pointer-events: none;
       mix-blend-mode: multiply;
     }
     .logo-box img {
-      max-height: 74px;
-      max-width: 150px;
+      height: var(--logo-size);
+      width: auto;
+      max-width: 180px;
       object-fit: contain;
     }
     .title-block {
@@ -102,7 +178,7 @@
     }
     .company-name {
       font-family: 'CLC Logo', 'supermarket', Georgia, serif;
-      font-size: 38px;
+      font-size: var(--company-size);
       font-weight: bold;
       line-height: 1.05;
       letter-spacing: 0.6px;
@@ -110,7 +186,7 @@
     }
     .cal-subtitle-bar {
       width: 100%;
-      background-color: #F2EFF7;
+      background-color: var(--subtitle-bg);
       text-align: center;
       padding: 3px 0;
     }
@@ -122,12 +198,11 @@
       display: inline-block;
     }
 
-    /* ตาราง 12 เดือน (4 คอลัมน์ x 3 แถว) — จัดแถว Working Day ให้ตรงกันทุกเดือน */
+    /* ตาราง 12 เดือน (4 คอลัมน์ x 3 แถว) */
     .months-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px 18px;
-      margin-bottom: 4px;
+      gap: var(--month-gap-y) 18px;
     }
     .month-card {
       border: none;
@@ -152,33 +227,32 @@
       text-align: center;
       font-family: 'supermarket', Tahoma, sans-serif;
       border: none;
-      height: 18px;
-      line-height: 18px;
-      font-size: 11px;
+      height: var(--row-height);
+      line-height: var(--row-height);
+      font-size: var(--day-font-size);
       color: #000;
     }
-    /* แถบหัวตารางแต่ละเดือนสีม่วงอ่อน (ตัวอักษรสีดำทั้งหมดรวม อา./SUN) */
     .month-table tr.th-th th {
-      background: #E3DCEB;
+      background: var(--month-header-bg);
       font-size: 10px;
       font-weight: bold;
-      height: 14.5px;
-      line-height: 14.5px;
-      color: #000000 !important;
+      height: 15px;
+      line-height: 15px;
+      color: #000000;
     }
     .month-table tr.th-en th {
-      background: #E3DCEB;
+      background: var(--month-header-bg);
       font-size: 8.5px;
       font-weight: bold;
-      height: 13.5px;
-      line-height: 13.5px;
+      height: 14px;
+      line-height: 14px;
       padding-bottom: 1px;
-      color: #000000 !important;
+      color: #000000;
     }
-    /* วันอาทิตย์สีแดง เฉพาะช่องตัวเลขวันที่ (td) */
-    .month-table td.sun-col {
-      color: #dc2626 !important;
-    }
+    .month-table th.sun-col { color: var(--sun-header-color) !important; }
+    .month-table td.sun-col,
+    .month-table td.sun-col span { color: var(--sun-color) !important; }
+
     .day-cell {
       cursor: pointer;
       font-weight: bold;
@@ -187,10 +261,10 @@
     }
     .day-cell:hover { filter: brightness(0.92); outline: 1px solid #3b82f6; }
 
-    /* สีวันหยุดตรงตามต้นฉบับ */
-    .bg-national { background-color: #CFFF9F !important; }
-    .bg-special  { background-color: #DDD3F1 !important; }
-    .bg-sport    { background-color: #FEF08A !important; }
+    /* สีวันหยุด */
+    .bg-national { background-color: var(--color-national) !important; }
+    .bg-special  { background-color: var(--color-special) !important; }
+    .bg-sport    { background-color: var(--color-sport) !important; }
 
     /* ช่องวันที่คู่แบบมีเส้นทแยงมุม (เฉพาะวันสุดท้ายของเดือน) */
     .split-cell {
@@ -221,12 +295,14 @@
       color: #1e293b;
     }
 
-    /* ส่วนล่าง: รายการวันหยุด 5 คอลัมน์ (ซ้าย) + กล่องสรุปกรอบดำ (ขวา) */
+    /* ส่วนล่าง: รายการวันหยุด 5 คอลัมน์ + กล่องสรุปกรอบดำ */
+    .footer-section {
+      margin-top: var(--footer-gap-top);
+    }
     .footer-grid {
       display: grid;
       grid-template-columns: 3.1fr 1.15fr;
       gap: 12px;
-      margin-top: 2px;
       align-items: start;
     }
     .holiday-list {
@@ -238,7 +314,7 @@
       font-family: Tahoma, sans-serif;
       font-size: 7.5px;
       font-weight: bold;
-      line-height: 1.38;
+      line-height: 1.42;
       color: #111;
     }
     .hol-item {
@@ -249,19 +325,18 @@
     }
     .hol-item:hover { background: #f1f5f9; }
 
-    /* กล่องสรุปตัวเลขแบบกรอบดำ */
     .summary-box {
       border: 1.5px solid #000;
       font-family: Calibri, Tahoma, sans-serif;
       font-size: 10px;
       font-weight: bold;
-      line-height: 1.38;
+      line-height: 1.4;
       background: #fff;
     }
     .sum-total {
       background: #BFBFBF;
       text-align: center;
-      padding: 2px 6px;
+      padding: 2.5px 6px;
     }
     .sum-sport {
       background: #D9D9D9;
@@ -274,7 +349,7 @@
       gap: 5px;
     }
     .sum-mid {
-      padding: 4px 12px;
+      padding: 5px 12px;
       border-bottom: 1px solid #000;
     }
     .sum-row {
@@ -302,10 +377,10 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      margin-top: 10px;
+      margin-top: var(--sign-margin-top);
       padding-bottom: 2px;
       font-family: 'KodchiangUPC', Tahoma, sans-serif;
-      font-size: 15px;
+      font-size: 15.5px;
       font-weight: bold;
       text-align: center;
     }
@@ -335,8 +410,7 @@
     }
     .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
 
-    /* ตั้งค่าพิมพ์ 1 หน้า A4 แนวนอน พร้อมระยะขอบกระดาษที่สมดุล */
-    @page { size: A4 landscape; margin: 8mm 10mm; }
+    /* ตั้งค่าพิมพ์ 1 หน้า A4 แนวนอน */
     @media print {
       html, body {
         width: 100%;
@@ -344,12 +418,11 @@
         background: #fff;
         padding: 0;
         margin: 0;
-        overflow: hidden;
       }
-      .toolbar, .modal-bg { display: none !important; }
+      .toolbar, .design-panel, .modal-bg { display: none !important; }
       .a4-sheet {
         width: 100%;
-        height: 192mm;
+        min-height: auto;
         padding: 0;
         margin: 0;
         box-shadow: none;
@@ -371,42 +444,91 @@
       <button class="btn-amber" onclick="loadThaiHolidays()">🇹🇭 โหลดวันหยุดราชการ</button>
     </div>
     <div class="toolbar-group">
-      <button id="btnModeQuick" class="btn-slate mode-active" onclick="setMode('quick')">🎨 โหมดคลิกสลับสีเร็ว</button>
-      <button id="btnModeEdit" class="btn-slate" onclick="setMode('edit')">✏️ โหมดแก้ชื่อวันหยุด</button>
-      <label class="btn btn-slate">🖼️ เปลี่ยนโลโก้ <input type="file" accept="image/*" style="display:none" onchange="uploadLogo(event)"></label>
+      <button id="btnModeQuick" class="btn-slate mode-active" onclick="setMode('quick')">🎨 สลับสีเร็ว</button>
+      <button id="btnModeEdit" class="btn-slate" onclick="setMode('edit')">✏️ แก้ชื่อวันหยุด</button>
+      <button id="btnDesign" class="btn-pink" onclick="toggleDesignPanel()">⚙️ ปรับแต่งฟอร์ม</button>
+      <label class="btn btn-slate">🖼️ โลโก้ <input type="file" accept="image/*" style="display:none" onchange="uploadLogo(event)"></label>
       <button class="btn-green" onclick="exportJSON()">💾 บันทึกไฟล์</button>
       <label class="btn btn-slate">📂 เปิดไฟล์ <input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
       <button class="btn-primary" onclick="window.print()">🖨️ พิมพ์ / PDF (A4)</button>
     </div>
   </div>
 
-  <!-- ฟอร์มปฏิทิน A4 แนวนอน -->
-  <div class="a4-sheet">
-    <div>
-      <div class="cal-header">
-        <div class="logo-box">
-          <img id="companyLogo" src="logo.png" alt="" onerror="this.style.display='none'">
-        </div>
-        <div class="title-block">
-          <div class="company-name" contenteditable="true">Calibration Laboratory Co.,ltd.</div>
-          <div class="cal-subtitle-bar">
-            <div class="cal-subtitle" id="calSubtitle" contenteditable="true">Calendar 2027</div>
+  <!-- แผงปรับแต่งหน้าตาฟอร์มแบบ Real-time -->
+  <div class="design-panel" id="designPanel">
+    <div class="design-header">
+      <h4>⚙️ ปรับแต่งหน้าตาฟอร์ม (บันทึกอัตโนมัติในเครื่อง &amp; ซ่อนอัตโนมัติตอนพิมพ์)</h4>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-slate" style="padding:4px 10px;border-radius:6px;border:none;color:#fff;cursor:pointer;font-size:11.5px;" onclick="resetDesign()">🔄 คืนค่าเริ่มต้น</button>
+        <button class="btn-primary" style="padding:4px 10px;border-radius:6px;border:none;cursor:pointer;font-size:11.5px;" onclick="toggleDesignPanel()">✓ เสร็จสิ้น</button>
+      </div>
+    </div>
+    <div class="design-grid">
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">🖼️ ส่วนหัว &amp; โลโก้</div>
+        <div class="ctrl-item"><label>ขนาดโลโก้</label><input type="range" id="cfgLogoSize" min="50" max="120" oninput="updateDesign()"><span class="ctrl-val" id="valLogoSize"></span></div>
+        <div class="ctrl-item"><label>โลโก้ บน-ล่าง</label><input type="range" id="cfgLogoTop" min="-20" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valLogoTop"></span></div>
+        <div class="ctrl-item"><label>โลโก้ ซ้าย-ขวา</label><input type="range" id="cfgLogoLeft" min="0" max="60" oninput="updateDesign()"><span class="ctrl-val" id="valLogoLeft"></span></div>
+        <div class="ctrl-item"><label>ขนาดชื่อบริษัท</label><input type="range" id="cfgCompanySize" min="26" max="48" oninput="updateDesign()"><span class="ctrl-val" id="valCompanySize"></span></div>
+      </div>
+
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">📏 ระยะห่าง &amp; ความสมดุล</div>
+        <div class="ctrl-item"><label>ความสูงแถววันที่</label><input type="range" id="cfgRowHeight" min="15" max="25" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valRowHeight"></span></div>
+        <div class="ctrl-item"><label>ขนาดตัวเลขวันที่</label><input type="range" id="cfgDayFont" min="9" max="14" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valDayFont"></span></div>
+        <div class="ctrl-item"><label>ช่องว่างระหว่างแถวเดือน</label><input type="range" id="cfgMonthGapY" min="4" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valMonthGapY"></span></div>
+        <div class="ctrl-item"><label>ช่องว่างก่อนส่วนท้าย</label><input type="range" id="cfgFooterGap" min="2" max="28" oninput="updateDesign()"><span class="ctrl-val" id="valFooterGap"></span></div>
+      </div>
+
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">🎨 โทนสี &amp; วันอาทิตย์</div>
+        <div class="ctrl-item"><label>แถบคาด Calendar</label><input type="color" id="cfgSubtitleBg" oninput="updateDesign()"></div>
+        <div class="ctrl-item"><label>แถบหัวตารางเดือน</label><input type="color" id="cfgMonthHeaderBg" oninput="updateDesign()"></div>
+        <div class="ctrl-item"><label>สีตัวเลขวันอาทิตย์</label><input type="color" id="cfgSunColor" oninput="updateDesign()"></div>
+        <div class="ctrl-item"><label>สีหัวตาราง อา./SUN</label><input type="color" id="cfgSunHeaderColor" oninput="updateDesign()"></div>
+      </div>
+
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">🖨️ ช่องเซ็นชื่อ &amp; ขอบพิมพ์ A4</div>
+        <div class="ctrl-item"><label>ช่องว่างเหนือเซ็นชื่อ</label><input type="range" id="cfgSignMargin" min="6" max="32" oninput="updateDesign()"><span class="ctrl-val" id="valSignMargin"></span></div>
+        <div class="ctrl-item"><label>ขอบพิมพ์ บน-ล่าง</label><input type="range" id="cfgPrintMarginY" min="4" max="16" oninput="updateDesign()"><span class="ctrl-val" id="valPrintMarginY"></span></div>
+        <div class="ctrl-item"><label>ขอบพิมพ์ ซ้าย-ขวา</label><input type="range" id="cfgPrintMarginX" min="4" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valPrintMarginX"></span></div>
+        <div class="ctrl-item"><label>สีวันหยุด (ราชการ/พิเศษ)</label>
+          <div style="display:flex; gap:4px;">
+            <input type="color" id="cfgColorNat" title="National Holiday" oninput="updateDesign()">
+            <input type="color" id="cfgColorSpc" title="Special Holiday" oninput="updateDesign()">
+            <input type="color" id="cfgColorSpt" title="Sport Day" oninput="updateDesign()">
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="months-grid" id="monthsGrid"></div>
+  <!-- ฟอร์มปฏิทิน A4 แนวนอน -->
+  <div class="a4-sheet">
+    <div class="cal-header">
+      <div class="logo-box">
+        <img id="companyLogo" src="logo.png" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="title-block">
+        <div class="company-name" contenteditable="true">Calibration Laboratory Co.,ltd.</div>
+        <div class="cal-subtitle-bar">
+          <div class="cal-subtitle" id="calSubtitle" contenteditable="true">Calendar 2027</div>
+        </div>
+      </div>
     </div>
 
-    <div>
+    <div class="months-grid" id="monthsGrid"></div>
+
+    <div class="footer-section">
       <div class="footer-grid">
         <div class="holiday-list" id="holidayList"></div>
         <div class="summary-box">
           <div class="sum-total">Total Working Day &nbsp;<span id="sumWork">0</span>&nbsp; days</div>
           <div class="sum-sport"><span>☀️</span> <span id="sumSport">Sport day 0 day</span></div>
           <div class="sum-mid">
-            <div class="sum-row"><span class="swatch" style="background:#CFFF9F"></span> National Holiday &nbsp;&nbsp;= <span id="sumNat">0</span> days</div>
-            <div class="sum-row"><span class="swatch" style="background:#DDD3F1"></span> Special Holiday &nbsp;&nbsp;&nbsp;&nbsp;= <span id="sumSpc">0</span> days</div>
+            <div class="sum-row"><span class="swatch" style="background:var(--color-national)"></span> National Holiday &nbsp;&nbsp;= <span id="sumNat">0</span> days</div>
+            <div class="sum-row"><span class="swatch" style="background:var(--color-special)"></span> Special Holiday &nbsp;&nbsp;&nbsp;&nbsp;= <span id="sumSpc">0</span> days</div>
           </div>
           <div class="reopen-note" id="reopenNote" contenteditable="true">*เปิดทำงานปีใหม่ January 4, 2028 (Tuesday)</div>
         </div>
@@ -427,9 +549,9 @@
       <label>ประเภทวัน:</label>
       <select id="modalType">
         <option value="">วันทำงานปกติ (ไม่มีสี)</option>
-        <option value="national">National Holiday (สีเขียว #CFFF9F)</option>
-        <option value="special">Special / Interchange day (สีม่วง #DDD3F1)</option>
-        <option value="sport">Sport Day (สีเหลือง #FEF08A)</option>
+        <option value="national">National Holiday (สีเขียว)</option>
+        <option value="special">Special / Interchange day (สีม่วง)</option>
+        <option value="sport">Sport Day (สีเหลือง)</option>
       </select>
       <label>ชื่อวันหยุด (แสดงด้านล่างปฏิทิน):</label>
       <input type="text" id="modalName" placeholder="เช่น New Year's day หรือ Interchange day">
@@ -445,10 +567,132 @@
   const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const DAYS_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
+  const DEFAULT_DESIGN = {
+    logoSize: 84,
+    logoTop: -2,
+    logoLeft: 14,
+    companySize: 38,
+    rowHeight: 19,
+    dayFont: 11,
+    monthGapY: 9,
+    footerGap: 8,
+    signMargin: 16,
+    printMarginY: 8,
+    printMarginX: 10,
+    subtitleBg: "#F2EFF7",
+    monthHeaderBg: "#E3DCEB",
+    sunColor: "#dc2626",
+    sunHeaderColor: "#000000",
+    colorNat: "#CFFF9F",
+    colorSpc: "#DDD3F1",
+    colorSpt: "#FEF08A"
+  };
+
+  let design = { ...DEFAULT_DESIGN };
   let currentYear = 2027;
   let clickMode = 'quick';
   let holidays = {};
   let editingKey = null;
+
+  // โหลดค่าดีไซน์ที่เคยปรับไว้จาก localStorage
+  try {
+    const saved = localStorage.getItem('clc_calendar_design');
+    if (saved) design = { ...DEFAULT_DESIGN, ...JSON.parse(saved) };
+  } catch (e) {}
+
+  function syncDesignInputs() {
+    document.getElementById('cfgLogoSize').value = design.logoSize;
+    document.getElementById('cfgLogoTop').value = design.logoTop;
+    document.getElementById('cfgLogoLeft').value = design.logoLeft;
+    document.getElementById('cfgCompanySize').value = design.companySize;
+    document.getElementById('cfgRowHeight').value = design.rowHeight;
+    document.getElementById('cfgDayFont').value = design.dayFont;
+    document.getElementById('cfgMonthGapY').value = design.monthGapY;
+    document.getElementById('cfgFooterGap').value = design.footerGap;
+    document.getElementById('cfgSignMargin').value = design.signMargin;
+    document.getElementById('cfgPrintMarginY').value = design.printMarginY;
+    document.getElementById('cfgPrintMarginX').value = design.printMarginX;
+    document.getElementById('cfgSubtitleBg').value = design.subtitleBg;
+    document.getElementById('cfgMonthHeaderBg').value = design.monthHeaderBg;
+    document.getElementById('cfgSunColor').value = design.sunColor;
+    document.getElementById('cfgSunHeaderColor').value = design.sunHeaderColor;
+    document.getElementById('cfgColorNat').value = design.colorNat;
+    document.getElementById('cfgColorSpc').value = design.colorSpc;
+    document.getElementById('cfgColorSpt').value = design.colorSpt;
+  }
+
+  function applyDesign() {
+    const r = document.documentElement.style;
+    r.setProperty('--logo-size', design.logoSize + 'px');
+    r.setProperty('--logo-top', design.logoTop + 'px');
+    r.setProperty('--logo-left', design.logoLeft + 'px');
+    r.setProperty('--company-size', design.companySize + 'px');
+    r.setProperty('--row-height', design.rowHeight + 'px');
+    r.setProperty('--day-font-size', design.dayFont + 'px');
+    r.setProperty('--month-gap-y', design.monthGapY + 'px');
+    r.setProperty('--footer-gap-top', design.footerGap + 'px');
+    r.setProperty('--sign-margin-top', design.signMargin + 'px');
+    r.setProperty('--subtitle-bg', design.subtitleBg);
+    r.setProperty('--month-header-bg', design.monthHeaderBg);
+    r.setProperty('--sun-color', design.sunColor);
+    r.setProperty('--sun-header-color', design.sunHeaderColor);
+    r.setProperty('--color-national', design.colorNat);
+    r.setProperty('--color-special', design.colorSpc);
+    r.setProperty('--color-sport', design.colorSpt);
+
+    document.getElementById('dynamicPageStyle').textContent =
+      `@page { size: A4 landscape; margin: ${design.printMarginY}mm ${design.printMarginX}mm; }`;
+
+    document.getElementById('valLogoSize').textContent = design.logoSize + 'px';
+    document.getElementById('valLogoTop').textContent = design.logoTop + 'px';
+    document.getElementById('valLogoLeft').textContent = design.logoLeft + 'px';
+    document.getElementById('valCompanySize').textContent = design.companySize + 'px';
+    document.getElementById('valRowHeight').textContent = design.rowHeight + 'px';
+    document.getElementById('valDayFont').textContent = design.dayFont + 'px';
+    document.getElementById('valMonthGapY').textContent = design.monthGapY + 'px';
+    document.getElementById('valFooterGap').textContent = design.footerGap + 'px';
+    document.getElementById('valSignMargin').textContent = design.signMargin + 'px';
+    document.getElementById('valPrintMarginY').textContent = design.printMarginY + 'mm';
+    document.getElementById('valPrintMarginX').textContent = design.printMarginX + 'mm';
+  }
+
+  function updateDesign() {
+    design = {
+      logoSize: Number(document.getElementById('cfgLogoSize').value),
+      logoTop: Number(document.getElementById('cfgLogoTop').value),
+      logoLeft: Number(document.getElementById('cfgLogoLeft').value),
+      companySize: Number(document.getElementById('cfgCompanySize').value),
+      rowHeight: Number(document.getElementById('cfgRowHeight').value),
+      dayFont: Number(document.getElementById('cfgDayFont').value),
+      monthGapY: Number(document.getElementById('cfgMonthGapY').value),
+      footerGap: Number(document.getElementById('cfgFooterGap').value),
+      signMargin: Number(document.getElementById('cfgSignMargin').value),
+      printMarginY: Number(document.getElementById('cfgPrintMarginY').value),
+      printMarginX: Number(document.getElementById('cfgPrintMarginX').value),
+      subtitleBg: document.getElementById('cfgSubtitleBg').value,
+      monthHeaderBg: document.getElementById('cfgMonthHeaderBg').value,
+      sunColor: document.getElementById('cfgSunColor').value,
+      sunHeaderColor: document.getElementById('cfgSunHeaderColor').value,
+      colorNat: document.getElementById('cfgColorNat').value,
+      colorSpc: document.getElementById('cfgColorSpc').value,
+      colorSpt: document.getElementById('cfgColorSpt').value
+    };
+    applyDesign();
+    try { localStorage.setItem('clc_calendar_design', JSON.stringify(design)); } catch (e) {}
+  }
+
+  function resetDesign() {
+    design = { ...DEFAULT_DESIGN };
+    syncDesignInputs();
+    applyDesign();
+    try { localStorage.removeItem('clc_calendar_design'); } catch (e) {}
+  }
+
+  function toggleDesignPanel() {
+    const panel = document.getElementById('designPanel');
+    const isOpen = panel.classList.toggle('open');
+    document.getElementById('btnDesign').classList.toggle('mode-active', isOpen);
+  }
 
   const yearSel = document.getElementById('yearSelect');
   for (let y = 2025; y <= 2035; y++) {
@@ -564,8 +808,6 @@
       const daysInMonth = new Date(currentYear, m + 1, 0).getDate();
       let monthWork = 0;
 
-      // ถ้าเกิน 35 ช่องแค่วันเดียว (วันสุดท้ายของเดือน) ให้ยุบเป็นช่องทแยงมุมในแถวที่ 5
-      // แต่ถ้าเกิน 2 วัน (เช่น 30 และ 31) ให้ขึ้นแถวที่ 6 แยกช่องชัดเจน
       const needSixRows = (firstDay + daysInMonth) > 36;
       const totalRows = needSixRows ? 6 : 5;
       const cells = Array(totalRows * 7).fill(null).map(() => []);
@@ -654,7 +896,12 @@
   }
 
   function exportJSON() {
-    const data = { year: currentYear, holidays, reopenNote: document.getElementById('reopenNote').textContent };
+    const data = {
+      year: currentYear,
+      holidays,
+      design,
+      reopenNote: document.getElementById('reopenNote').textContent
+    };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -671,6 +918,11 @@
       currentYear = data.year || 2027;
       yearSel.value = currentYear;
       holidays = data.holidays || {};
+      if (data.design) {
+        design = { ...DEFAULT_DESIGN, ...data.design };
+        syncDesignInputs();
+        applyDesign();
+      }
       document.getElementById('calSubtitle').textContent = `Calendar ${currentYear}`;
       if (data.reopenNote) document.getElementById('reopenNote').textContent = data.reopenNote;
       renderCalendar();
@@ -678,6 +930,8 @@
     reader.readAsText(file);
   }
 
+  syncDesignInputs();
+  applyDesign();
   changeYear();
 </script>
 </body>
