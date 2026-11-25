@@ -1497,12 +1497,18 @@
     rd.readAsDataURL(f);
   }
 
-  function exportJSON() {
+function exportJSON() {
     manualSave(true);
-    const data = { year: currentYear, design, calendarsByYear, versions };
+    const data = {
+      savedAt: Date.now(),
+      year: currentYear,
+      design,
+      calendarsByYear,
+      versions
+    };
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
-    a.download = `Calendar_Studio_${currentYear}.json`;
+    a.download = 'data.json';
     a.click();
   }
 
@@ -1538,12 +1544,38 @@
     document.getElementById(id).addEventListener('input', markUnsaved);
   });
 
-  loadStorage();
-  syncInputs();
-  applyDesign();
-  renderTemplates();
-  renderVersions();
-  changeYear();
+async function initApp() {
+    loadStorage();
+    try {
+      const res = await fetch('./data.json?t=' + Date.now(), { cache: 'no-store' });
+      if (res.ok) {
+        const remote = await res.json();
+        const localSavedAt = Number(localStorage.getItem('clc_studio_saved_at_v3') || 0);
+        // ถ้าเครื่องนี้ยังไม่เคยเซฟเอง หรือไฟล์บน GitHub ใหม่กว่า ให้ดึงจาก data.json ทันที
+        if (!localSavedAt || (remote.savedAt && remote.savedAt > localSavedAt)) {
+          if (remote.design) design = { ...DEFAULT_DESIGN, ...remote.design };
+          if (remote.calendarsByYear) calendarsByYear = remote.calendarsByYear;
+          if (remote.versions) versions = remote.versions;
+          if (remote.year) {
+            currentYear = remote.year;
+            yearSel.value = currentYear;
+          }
+          if (remote.savedAt) {
+            localStorage.setItem('clc_studio_saved_at_v3', String(remote.savedAt));
+          }
+        }
+      }
+    } catch (e) {
+      // ถ้ายังไม่มีไฟล์ data.json บน GitHub จะใช้ค่าจากเครื่องตามปกติ
+    }
+    syncInputs();
+    applyDesign();
+    renderTemplates();
+    renderVersions();
+    changeYear();
+  }
+
+  initApp();
 </script>
 </body>
 </html>
