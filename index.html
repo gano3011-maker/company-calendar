@@ -822,7 +822,7 @@
       let monthWork = 0;
 
       const needSixRows = (firstDay + daysInMonth) > 36;
-      const totalRows = needSixRows ? 6 : 5;
+      const totalRows = 6;
       const cells = Array(totalRows * 7).fill(null).map(() => []);
 
       for (let d = 1; d <= daysInMonth; d++) {
