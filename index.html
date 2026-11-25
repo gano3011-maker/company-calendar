@@ -58,77 +58,79 @@
     .btn-slate { background: #475569; color: #fff; }
     .mode-active { outline: 2px solid #fde047; }
 
-    /* หน้ากระดาษ A4 แนวนอน คลีนเหมือนไฟล์ PDF */
+    /* หน้ากระดาษ A4 แนวนอน */
     .a4-sheet {
       width: 297mm;
       min-height: 205mm;
       margin: 0 auto;
       background: #fff;
-      padding: 8mm 10mm 7mm 10mm;
+      padding: 7mm 10mm 8mm 10mm;
       box-shadow: 0 6px 24px rgba(0,0,0,0.12);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    /* ส่วนหัว: โลโก้ + ชื่อบริษัท + ปีปฏิทิน */
+    /* ส่วนหัว: โลโก้ใหญ่ + ชื่อบริษัทใหญ่ + แถบสีม่วงคาดยาว */
     .cal-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
       position: relative;
-      margin-bottom: 8px;
-      min-height: 60px;
+      margin-bottom: 10px;
+      padding-top: 2px;
     }
     .logo-box {
       position: absolute;
-      left: 6px;
+      left: 14px;
       top: 0;
-      height: 60px;
+      z-index: 2;
+      height: 82px;
       display: flex;
       align-items: center;
     }
     .logo-box img {
-      max-height: 60px;
-      max-width: 140px;
+      max-height: 82px;
+      max-width: 160px;
       object-fit: contain;
     }
-    .title-block { text-align: center; }
+    .title-block {
+      width: 100%;
+      text-align: center;
+    }
     .company-name {
       font-family: 'CLC Logo', 'supermarket', Georgia, serif;
-      font-size: 32px;
+      font-size: 40px;
       font-weight: bold;
       line-height: 1.05;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
+      margin-bottom: 4px;
+    }
+    .cal-subtitle-bar {
+      width: 100%;
+      background-color: #E4DFEC;
+      text-align: center;
+      padding: 4px 0;
     }
     .cal-subtitle {
       font-family: 'supermarket', Tahoma, sans-serif;
-      font-size: 17px;
+      font-size: 20px;
       font-weight: bold;
-      background: #f1f5f9;
+      color: #000;
       display: inline-block;
-      padding: 1px 36px;
-      border-radius: 3px;
-      margin-top: 3px;
     }
 
     /* ตาราง 12 เดือน (4 คอลัมน์ x 3 แถว) — ไร้เส้นตาราง */
     .months-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px 18px;
-      margin-bottom: 8px;
+      gap: 8px 18px;
+      margin-bottom: 6px;
     }
-    .month-card {
-      border: none;
-    }
+    .month-card { border: none; }
     .month-title {
       text-align: center;
       font-family: 'supermarket', Tahoma, sans-serif;
       font-size: 13px;
       font-weight: bold;
-      padding: 2px 0 3px 0;
-      background: transparent;
+      padding: 1px 0 3px 0;
       letter-spacing: 0.5px;
     }
     .month-table {
@@ -171,22 +173,25 @@
     /* สีวันหยุดตรงตามต้นฉบับ */
     .bg-national { background-color: #CFFF9F !important; }
     .bg-special  { background-color: #DDD3F1 !important; }
-    .bg-sport    { background-color: #FEF08A !important; }.split-cell {
+    .bg-sport    { background-color: #FEF08A !important; }
+
+    /* ช่องวันที่คู่แบบมีเส้นทแยงมุมเหมือน Excel */
+    .split-cell {
       position: relative;
       padding: 0 !important;
-      background-image: linear-gradient(to bottom right, transparent calc(50% - 0.6px), #334155, transparent calc(50% + 0.6px));
+      background-image: linear-gradient(to bottom right, transparent calc(50% - 0.6px), #334155 50%, transparent calc(50% + 0.6px));
     }
     .split-top {
       position: absolute;
       top: 1px;
-      left: 2px;
+      left: 3px;
       font-size: 8.5px;
       line-height: 1;
     }
     .split-bottom {
       position: absolute;
       bottom: 1px;
-      right: 2px;
+      right: 3px;
       font-size: 8.5px;
       line-height: 1;
     }
@@ -194,28 +199,27 @@
     .workday-row {
       font-family: 'supermarket', Tahoma, sans-serif;
       font-size: 10px;
-      text-align: left;
-      padding: 3px 2px 0 2px;
-      background: transparent;
+      text-align: center;
+      padding: 2px 2px 0 2px;
       color: #1e293b;
     }
 
-    /* ส่วนล่าง: รายการวันหยุด (ซ้าย - คลีนพื้นขาว) + กล่องสรุปตัวเลข (ขวา) */
+    /* ส่วนล่าง: รายการวันหยุด 5 คอลัมน์ (ซ้าย) + กล่องสรุปกรอบดำ (ขวา) */
     .footer-grid {
       display: grid;
-      grid-template-columns: 3.3fr 1.15fr;
-      gap: 14px;
+      grid-template-columns: 3.1fr 1.15fr;
+      gap: 12px;
       margin-top: 6px;
       align-items: start;
     }
     .holiday-list {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       grid-auto-flow: column;
-      grid-template-rows: repeat(10, auto);
-      gap: 1px 10px;
+      grid-template-rows: repeat(9, auto);
+      gap: 1px 6px;
       font-family: Tahoma, sans-serif;
-      font-size: 8px;
+      font-size: 7.5px;
       font-weight: bold;
       line-height: 1.45;
       color: #111;
@@ -225,53 +229,68 @@
       overflow: hidden;
       text-overflow: ellipsis;
       padding: 0 2px;
-      border-radius: 2px;
     }
     .hol-item:hover { background: #f1f5f9; }
 
+    /* กล่องสรุปตัวเลขแบบกรอบดำเหมือนภาพต้นฉบับ */
     .summary-box {
+      border: 1.5px solid #000;
       font-family: Calibri, Tahoma, sans-serif;
       font-size: 10.5px;
       font-weight: bold;
-      line-height: 1.55;
+      line-height: 1.45;
+      background: #fff;
     }
     .sum-total {
-      background: #e2e8f0;
-      padding: 2px 8px;
-      border-radius: 3px;
-      margin-bottom: 4px;
-      display: inline-block;
-      width: 100%;
+      background: #BFBFBF;
+      text-align: center;
+      padding: 3px 6px;
+    }
+    .sum-sport {
+      background: #D9D9D9;
+      text-align: center;
+      padding: 2px 6px;
+      border-bottom: 1px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .sum-mid {
+      padding: 6px 12px;
+      border-bottom: 1px solid #000;
     }
     .sum-row {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
       margin: 2px 0;
     }
     .swatch {
       display: inline-block;
-      width: 15px;
-      height: 11px;
-      border: 0.5px solid #94a3b8;
+      width: 24px;
+      height: 12px;
       flex-shrink: 0;
     }
     .reopen-note {
-      margin-top: 5px;
+      background: #BFBFBF;
+      text-align: center;
+      padding: 4px 6px;
       font-size: 9.5px;
-      color: #b91c1c;
+      color: #dc2626;
     }
 
-    /* ช่องเซ็นชื่อด้านล่างสุด (ไร้เส้นประ) */
+    /* ช่องเซ็นชื่อด้านล่างสุด (เพิ่มพื้นที่กว้างสำหรับเซ็นชื่อ) */
     .sign-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-top: 10px;
-      padding-top: 4px;
+      gap: 20px;
+      margin-top: 22px;
+      padding-bottom: 14px;
       font-family: 'KodchiangUPC', Tahoma, sans-serif;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: bold;
+      text-align: center;
     }
 
     /* Popup แก้ไขชื่อวันหยุด */
@@ -344,7 +363,9 @@
         </div>
         <div class="title-block">
           <div class="company-name" contenteditable="true">Calibration Laboratory Co.,ltd.</div>
-          <div class="cal-subtitle" id="calSubtitle" contenteditable="true">Calendar 2027</div>
+          <div class="cal-subtitle-bar">
+            <div class="cal-subtitle" id="calSubtitle" contenteditable="true">Calendar 2027</div>
+          </div>
         </div>
       </div>
 
@@ -356,17 +377,19 @@
         <div class="holiday-list" id="holidayList"></div>
         <div class="summary-box">
           <div class="sum-total">Total Working Day &nbsp;<span id="sumWork">0</span>&nbsp; days</div>
-          <div class="sum-row"><span class="swatch" style="background:#FEF08A"></span> <span id="sumSport">Sport day 0 day</span></div>
-          <div class="sum-row"><span class="swatch" style="background:#CFFF9F"></span> National Holiday = <span id="sumNat">0</span> days</div>
-          <div class="sum-row"><span class="swatch" style="background:#DDD3F1"></span> Special Holiday = <span id="sumSpc">0</span> days</div>
+          <div class="sum-sport"><span>☀️</span> <span id="sumSport">Sport day 0 day</span></div>
+          <div class="sum-mid">
+            <div class="sum-row"><span class="swatch" style="background:#CFFF9F"></span> National Holiday &nbsp;&nbsp;= <span id="sumNat">0</span> days</div>
+            <div class="sum-row"><span class="swatch" style="background:#DDD3F1"></span> Special Holiday &nbsp;&nbsp;&nbsp;&nbsp;= <span id="sumSpc">0</span> days</div>
+          </div>
           <div class="reopen-note" id="reopenNote" contenteditable="true">*เปิดทำงานปีใหม่ January 4, 2028 (Tuesday)</div>
         </div>
       </div>
 
       <div class="sign-row">
-        <div contenteditable="true">Prepared by ……………………………………………… Date 02/12/2026</div>
-        <div contenteditable="true">Checked by ……………………………………………… Date 02/12/2026</div>
-        <div contenteditable="true">Approved by ……………………………………………… Date 02/12/2026</div>
+        <div contenteditable="true">Prepared by …………………………………………… Date 02/12/2026</div>
+        <div contenteditable="true">Checked by …………………………………………… Date 02/12/2026</div>
+        <div contenteditable="true">Approved by …………………………………………… Date 02/12/2026</div>
       </div>
     </div>
   </div>
@@ -543,15 +566,16 @@
           if (daysArr.length === 0) {
             rowsHtml += '<td></td>';
           } else {
-            const mainDay = daysArr[0];
-            const k = dateKey(currentYear, m, mainDay);
-            const h = holidays[k];
+            const k1 = dateKey(currentYear, m, daysArr[0]);
+            const k2 = daysArr.length === 2 ? dateKey(currentYear, m, daysArr[1]) : null;
+            const activeKey = (k2 && holidays[k2] && !holidays[k1]) ? k2 : k1;
+            const h = holidays[activeKey];
             const bgCls = h ? (h.type === 'national' ? 'bg-national' : h.type === 'special' ? 'bg-special' : 'bg-sport') : '';
             const sunCls = c === 0 ? 'sun-col' : '';
             if (daysArr.length === 2) {
-              rowsHtml += `<td class="day-cell split-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${k}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}"><span class="split-top">${daysArr[0]}</span><span class="split-bottom">${daysArr[1]}</span></td>`;
+              rowsHtml += `<td class="day-cell split-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}"><span class="split-top">${daysArr[0]}</span><span class="split-bottom">${daysArr[1]}</span></td>`;
             } else {
-              rowsHtml += `<td class="day-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${k}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${daysArr[0]}</td>`;
+              rowsHtml += `<td class="day-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${daysArr[0]}</td>`;
             }
           }
         }
