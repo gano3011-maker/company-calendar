@@ -15,6 +15,8 @@
       --company-size: 38px;
       --subtitle-bg: #F2EFF7;
       --month-header-bg: #E3DCEB;
+      --month-border-width: 1.5px;
+      --month-border-color: #000000;
       --row-height: 19px;
       --day-font-size: 11px;
       --month-gap-y: 9px;
@@ -130,7 +132,7 @@
     }
     .ctrl-item:last-child { margin-bottom: 0; }
     .ctrl-item label { font-size: 11px; color: #475569; white-space: nowrap; }
-    .ctrl-item input[type="range"] { width: 88px; cursor: pointer; }
+    .ctrl-item input[type="range"] { width: 82px; cursor: pointer; }
     .ctrl-item input[type="color"] { width: 32px; height: 22px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; padding: 0; }
     .ctrl-val { font-size: 10.5px; color: #0f172a; font-weight: bold; min-width: 34px; text-align: right; }
 
@@ -222,6 +224,7 @@
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
+      border: var(--month-border-width) solid var(--month-border-color);
     }
     .month-table th, .month-table td {
       text-align: center;
@@ -473,17 +476,19 @@
       </div>
 
       <div class="ctrl-group">
-        <div class="ctrl-group-title">📏 ระยะห่าง &amp; ความสมดุล</div>
+        <div class="ctrl-group-title">📏 ระยะห่าง &amp; กรอบเดือน</div>
         <div class="ctrl-item"><label>ความสูงแถววันที่</label><input type="range" id="cfgRowHeight" min="15" max="25" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valRowHeight"></span></div>
         <div class="ctrl-item"><label>ขนาดตัวเลขวันที่</label><input type="range" id="cfgDayFont" min="9" max="14" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valDayFont"></span></div>
-        <div class="ctrl-item"><label>ช่องว่างระหว่างแถวเดือน</label><input type="range" id="cfgMonthGapY" min="4" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valMonthGapY"></span></div>
+        <div class="ctrl-item"><label>ช่องว่างแถวเดือน</label><input type="range" id="cfgMonthGapY" min="4" max="20" oninput="updateDesign()"><span class="ctrl-val" id="valMonthGapY"></span></div>
         <div class="ctrl-item"><label>ช่องว่างก่อนส่วนท้าย</label><input type="range" id="cfgFooterGap" min="2" max="28" oninput="updateDesign()"><span class="ctrl-val" id="valFooterGap"></span></div>
+        <div class="ctrl-item"><label>ความหนากรอบเดือน</label><input type="range" id="cfgMonthBorderWidth" min="0" max="3" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valMonthBorderWidth"></span></div>
       </div>
 
       <div class="ctrl-group">
         <div class="ctrl-group-title">🎨 โทนสี &amp; วันอาทิตย์</div>
         <div class="ctrl-item"><label>แถบคาด Calendar</label><input type="color" id="cfgSubtitleBg" oninput="updateDesign()"></div>
         <div class="ctrl-item"><label>แถบหัวตารางเดือน</label><input type="color" id="cfgMonthHeaderBg" oninput="updateDesign()"></div>
+        <div class="ctrl-item"><label>สีกรอบแต่ละเดือน</label><input type="color" id="cfgMonthBorderColor" oninput="updateDesign()"></div>
         <div class="ctrl-item"><label>สีตัวเลขวันอาทิตย์</label><input type="color" id="cfgSunColor" oninput="updateDesign()"></div>
         <div class="ctrl-item"><label>สีหัวตาราง อา./SUN</label><input type="color" id="cfgSunHeaderColor" oninput="updateDesign()"></div>
       </div>
@@ -576,6 +581,8 @@
     dayFont: 11,
     monthGapY: 9,
     footerGap: 8,
+    monthBorderWidth: 1.5,
+    monthBorderColor: "#000000",
     signMargin: 16,
     printMarginY: 8,
     printMarginX: 10,
@@ -594,7 +601,6 @@
   let holidays = {};
   let editingKey = null;
 
-  // โหลดค่าดีไซน์ที่เคยปรับไว้จาก localStorage
   try {
     const saved = localStorage.getItem('clc_calendar_design');
     if (saved) design = { ...DEFAULT_DESIGN, ...JSON.parse(saved) };
@@ -609,6 +615,8 @@
     document.getElementById('cfgDayFont').value = design.dayFont;
     document.getElementById('cfgMonthGapY').value = design.monthGapY;
     document.getElementById('cfgFooterGap').value = design.footerGap;
+    document.getElementById('cfgMonthBorderWidth').value = design.monthBorderWidth;
+    document.getElementById('cfgMonthBorderColor').value = design.monthBorderColor;
     document.getElementById('cfgSignMargin').value = design.signMargin;
     document.getElementById('cfgPrintMarginY').value = design.printMarginY;
     document.getElementById('cfgPrintMarginX').value = design.printMarginX;
@@ -631,6 +639,8 @@
     r.setProperty('--day-font-size', design.dayFont + 'px');
     r.setProperty('--month-gap-y', design.monthGapY + 'px');
     r.setProperty('--footer-gap-top', design.footerGap + 'px');
+    r.setProperty('--month-border-width', design.monthBorderWidth + 'px');
+    r.setProperty('--month-border-color', design.monthBorderColor);
     r.setProperty('--sign-margin-top', design.signMargin + 'px');
     r.setProperty('--subtitle-bg', design.subtitleBg);
     r.setProperty('--month-header-bg', design.monthHeaderBg);
@@ -651,6 +661,7 @@
     document.getElementById('valDayFont').textContent = design.dayFont + 'px';
     document.getElementById('valMonthGapY').textContent = design.monthGapY + 'px';
     document.getElementById('valFooterGap').textContent = design.footerGap + 'px';
+    document.getElementById('valMonthBorderWidth').textContent = design.monthBorderWidth + 'px';
     document.getElementById('valSignMargin').textContent = design.signMargin + 'px';
     document.getElementById('valPrintMarginY').textContent = design.printMarginY + 'mm';
     document.getElementById('valPrintMarginX').textContent = design.printMarginX + 'mm';
@@ -666,6 +677,8 @@
       dayFont: Number(document.getElementById('cfgDayFont').value),
       monthGapY: Number(document.getElementById('cfgMonthGapY').value),
       footerGap: Number(document.getElementById('cfgFooterGap').value),
+      monthBorderWidth: Number(document.getElementById('cfgMonthBorderWidth').value),
+      monthBorderColor: document.getElementById('cfgMonthBorderColor').value,
       signMargin: Number(document.getElementById('cfgSignMargin').value),
       printMarginY: Number(document.getElementById('cfgPrintMarginY').value),
       printMarginX: Number(document.getElementById('cfgPrintMarginX').value),
