@@ -1551,8 +1551,8 @@ async function initApp() {
       if (res.ok) {
         const remote = await res.json();
         const localSavedAt = Number(localStorage.getItem('clc_studio_saved_at_v3') || 0);
-        // ถ้าเครื่องนี้ยังไม่เคยเซฟเอง หรือไฟล์บน GitHub ใหม่กว่า ให้ดึงจาก data.json ทันที
-        if (!localSavedAt || (remote.savedAt && remote.savedAt > localSavedAt)) {
+        const hasLocalData = !!localStorage.getItem('clc_studio_years_v3');
+        if (!hasLocalData || !localSavedAt || (remote.savedAt && remote.savedAt > localSavedAt)) {
           if (remote.design) design = { ...DEFAULT_DESIGN, ...remote.design };
           if (remote.calendarsByYear) calendarsByYear = remote.calendarsByYear;
           if (remote.versions) versions = remote.versions;
@@ -1560,14 +1560,15 @@ async function initApp() {
             currentYear = remote.year;
             yearSel.value = currentYear;
           }
+          localStorage.setItem('clc_studio_design_v3', JSON.stringify(design));
+          localStorage.setItem('clc_studio_years_v3', JSON.stringify(calendarsByYear));
+          localStorage.setItem('clc_studio_versions_v3', JSON.stringify(versions));
           if (remote.savedAt) {
             localStorage.setItem('clc_studio_saved_at_v3', String(remote.savedAt));
           }
         }
       }
-    } catch (e) {
-      // ถ้ายังไม่มีไฟล์ data.json บน GitHub จะใช้ค่าจากเครื่องตามปกติ
-    }
+    } catch (e) {}
     syncInputs();
     applyDesign();
     renderTemplates();
