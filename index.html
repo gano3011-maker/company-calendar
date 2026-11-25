@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Annual Calendar Generator</title>
+  <style>
+    /* โหลดฟอนต์จากไฟล์ที่อัปโหลดขึ้น GitHub Pages หรือจากเครื่อง PC โดยตรง */
+    @font-face {
+      font-family: 'CLC Logo';
+      src: local('CLC Logo'), url('CLCLogo.ttf') format('truetype');
+      font-weight: bold;
+    }
+    @font-face {
+      font-family: 'supermarket';
+      src: local('supermarket'), url('supermarket.ttf') format('truetype');
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #e2e8f0;
+      font-family: 'supermarket', Tahoma, sans-serif;
+      color: #000;
+      padding: 16px;
+    }
+
+    /* แผงควบคุมด้านบน (ซ่อนอัตโนมัติเวลาสั่งพิมพ์ PDF) */
+    .toolbar {
+      max-width: 1120px;
+      margin: 0 auto 14px auto;
+      background: #1e293b;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      font-family: Tahoma, sans-serif;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .toolbar-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar select, .toolbar button, .toolbar label.btn {
+      padding: 6px 11px;
+      border-radius: 6px;
+      border: none;
+      font-size: 12.5px;
+      cursor: pointer;
+      font-family: Tahoma, sans-serif;
+    }
+    .toolbar select { background: #fff; color: #0f172a; font-weight: bold; }
+    .btn-primary { background: #3b82f6; color: #fff; font-weight: bold; }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-purple { background: #8b5cf6; color: #fff; font-weight: bold; }
+    .btn-green { background: #10b981; color: #fff; font-weight: bold; }
+    .btn-amber { background: #f59e0b; color: #000; font-weight: bold; }
+    .btn-slate { background: #475569; color: #fff; }
+    .mode-active { outline: 2px solid #fde047; }
+
+    /* หน้ากระดาษ A4 แนวนอน เหมือนไฟล์ Excel เป๊ะ */
+    .a4-sheet {
+      width: 297mm;
+      min-height: 205mm;
+      margin: 0 auto;
+      background: #fff;
+      padding: 8mm 9mm 6mm 9mm;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ส่วนหัว: โลโก้ + ชื่อบริษัท + ปีปฏิทิน */
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 6px;
+      min-height: 58px;
+    }
+    .logo-box {
+      position: absolute;
+      left: 4px;
+      top: 0;
+      height: 58px;
+      display: flex;
+      align-items: center;
+    }
+    .logo-box img {
+      max-height: 58px;
+      max-width: 140px;
+      object-fit: contain;
+    }
+    .title-block { text-align: center; }
+    .company-name {
+      font-family: 'CLC Logo', 'supermarket', Georgia, serif;
+      font-size: 32px;
+      font-weight: bold;
+      line-height: 1.05;
+      letter-spacing: 0.5px;
+    }
+    .cal-subtitle {
+      font-family: 'supermarket', Tahoma, sans-serif;
+      font-size: 18px;
+      font-weight: bold;
+      background: #f1f5f9;
+      display: inline-block;
+      padding: 1px 28px;
+      border-radius: 4px;
+      margin-top: 2px;
+    }
+
+    /* ตาราง 12 เดือน (4 คอลัมน์ x 3 แถว) */
+    .months-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px 10px;
+      margin-bottom: 6px;
+    }
+    .month-card {
+      border: 1px solid #94a3b8;
+    }
+    .month-title {
+      text-align: center;
+      font-family: 'supermarket', Tahoma, sans-serif;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 2px 0;
+      background: #fff;
+      border-bottom: 1px solid #94a3b8;
+    }
+    .month-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .month-table th, .month-table td {
+      text-align: center;
+      font-family: 'supermarket', Tahoma, sans-serif;
+      border: 0.5px solid #cbd5e1;
+      height: 18px;
+      line-height: 17px;
+      font-size: 11px;
+    }
+    .month-table tr.th-th th {
+      background: #e2e8f0;
+      font-size: 10px;
+      font-weight: bold;
+      height: 15px;
+      line-height: 15px;
+    }
+    .month-table tr.th-en th {
+      background: #e2e8f0;
+      font-size: 9px;
+      font-weight: bold;
+      height: 14px;
+      line-height: 14px;
+      border-bottom: 1px solid #94a3b8;
+    }
+    .sun-col { color: #dc2626 !important; }
+    .day-cell {
+      cursor: pointer;
+      font-weight: bold;
+      user-select: none;
+      transition: filter 0.1s;
+    }
+    .day-cell:hover { filter: brightness(0.92); outline: 1px solid #3b82f6; }
+
+    /* สีวันหยุดตรงตามไฟล์ Excel */
+    .bg-national { background-color: #CFFF9F !important; }
+    .bg-special  { background-color: #DDD3F1 !important; }
+    .bg-sport    { background-color: #FEF08A !important; }
+
+    .workday-row {
+      font-family: 'supermarket', Tahoma, sans-serif;
+      font-size: 10px;
+      text-align: left;
+      padding: 2px 6px;
+      background: #f8fafc;
+      border-top: 1px solid #94a3b8;
+    }
+
+    /* ส่วนล่าง: รายการวันหยุด (ซ้าย) + กล่องสรุปตัวเลข (ขวา) */
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 3.2fr 1.15fr;
+      gap: 10px;
+      margin-top: 4px;
+      align-items: start;
+    }
+    .holiday-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-flow: column;
+      grid-template-rows: repeat(10, auto);
+      gap: 1px 6px;
+      font-family: Tahoma, sans-serif;
+      font-size: 8px;
+      font-weight: bold;
+      line-height: 1.35;
+    }
+    .hol-item {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+    .hol-item.nat { background: #CFFF9F; }
+    .hol-item.spc { background: #DDD3F1; }
+    .hol-item.spt { background: #FEF08A; }
+
+    .summary-box {
+      font-family: Calibri, Tahoma, sans-serif;
+      font-size: 10.5px;
+      font-weight: bold;
+      line-height: 1.5;
+    }
+    .sum-total {
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-bottom: 3px;
+    }
+    .sum-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 2px 0;
+    }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 11px;
+      border: 1px solid #64748b;
+      flex-shrink: 0;
+    }
+    .reopen-note {
+      margin-top: 4px;
+      font-size: 9.5px;
+      color: #b91c1c;
+    }
+
+    /* ช่องเซ็นชื่อด้านล่างสุด */
+    .sign-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 8px;
+      padding-top: 4px;
+      border-top: 1px dashed #cbd5e1;
+      font-family: 'KodchiangUPC', Tahoma, sans-serif;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    /* Popup แก้ไขชื่อวันหยุด */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      font-family: Tahoma, sans-serif;
+    }
+    .modal-box {
+      background: #fff;
+      padding: 18px 20px;
+      border-radius: 10px;
+      width: 340px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .modal-box h3 { font-size: 15px; margin-bottom: 10px; }
+    .modal-box label { display: block; font-size: 12px; margin: 8px 0 3px; font-weight: bold; }
+    .modal-box select, .modal-box input {
+      width: 100%; padding: 7px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;
+    }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+
+    /* ตั้งค่าพิมพ์ 1 หน้า A4 แนวนอนเป๊ะ */
+    @page { size: A4 landscape; margin: 5mm; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .toolbar, .modal-bg { display: none !important; }
+      .a4-sheet {
+        width: 100%;
+        min-height: auto;
+        padding: 0;
+        box-shadow: none;
+      }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- แผงควบคุมการทำงาน -->
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <strong>📅 ปี:</strong>
+      <select id="yearSelect" onchange="changeYear()"></select>
+      <button class="btn-purple" onclick="applyAltSaturdays(0)">⚡ เสาร์เว้นเสาร์ (เริ่มเสาร์ 1)</button>
+      <button class="btn-purple" onclick="applyAltSaturdays(1)">⚡ เสาร์เว้นเสาร์ (เริ่มเสาร์ 2)</button>
+      <button class="btn-amber" onclick="loadThaiHolidays()">🇹🇭 โหลดวันหยุดราชการ</button>
+    </div>
+    <div class="toolbar-group">
+      <button id="btnModeQuick" class="btn-slate mode-active" onclick="setMode('quick')">🎨 โหมดคลิกสลับสีเร็ว</button>
+      <button id="btnModeEdit" class="btn-slate" onclick="setMode('edit')">✏️ โหมดแก้ชื่อวันหยุด</button>
+      <label class="btn btn-slate">🖼️ เปลี่ยนโลโก้ <input type="file" accept="image/*" style="display:none" onchange="uploadLogo(event)"></label>
+      <button class="btn-green" onclick="exportJSON()">💾 บันทึกไฟล์</button>
+      <label class="btn btn-slate">📂 เปิดไฟล์ <input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
+      <button class="btn-primary" onclick="window.print()">🖨️ พิมพ์ / PDF (A4)</button>
+    </div>
+  </div>
+
+  <!-- ฟอร์มปฏิทิน A4 แนวนอน -->
+  <div class="a4-sheet">
+    <div>
+      <div class="cal-header">
+        <div class="logo-box">
+          <img id="companyLogo" src="logo.png" alt="" onerror="this.style.display='none'">
+        </div>
+        <div class="title-block">
+          <div class="company-name" contenteditable="true">Calibration Laboratory Co.,ltd.</div>
+          <div class="cal-subtitle" id="calSubtitle" contenteditable="true">Calendar 2027</div>
+        </div>
+      </div>
+
+      <div class="months-grid" id="monthsGrid"></div>
+    </div>
+
+    <div>
+      <div class="footer-grid">
+        <div class="holiday-list" id="holidayList"></div>
+        <div class="summary-box">
+          <div class="sum-total">Total Working Day &nbsp;<span id="sumWork">0</span>&nbsp; days</div>
+          <div class="sum-row"><span class="swatch" style="background:#FEF08A"></span> <span id="sumSport">Sport day 0 day</span></div>
+          <div class="sum-row"><span class="swatch" style="background:#CFFF9F"></span> National Holiday = <span id="sumNat">0</span> days</div>
+          <div class="sum-row"><span class="swatch" style="background:#DDD3F1"></span> Special Holiday = <span id="sumSpc">0</span> days</div>
+          <div class="reopen-note" id="reopenNote" contenteditable="true">*เปิดทำงานปีใหม่ January 4, 2028 (Tuesday)</div>
+        </div>
+      </div>
+
+      <div class="sign-row">
+        <div contenteditable="true">Prepared by ……………………………………………… Date 02/12/2026</div>
+        <div contenteditable="true">Checked by ……………………………………………… Date 02/12/2026</div>
+        <div contenteditable="true">Approved by ……………………………………………… Date 02/12/2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- หน้าต่างแก้ไขวันหยุดรายวัน -->
+  <div class="modal-bg" id="editModal">
+    <div class="modal-box">
+      <h3 id="modalDateLabel">แก้ไขวันหยุด</h3>
+      <label>ประเภทวัน:</label>
+      <select id="modalType">
+        <option value="">วันทำงานปกติ (ไม่มีสี)</option>
+        <option value="national">National Holiday (สีเขียว #CFFF9F)</option>
+        <option value="special">Special / Interchange day (สีม่วง #DDD3F1)</option>
+        <option value="sport">Sport Day (สีเหลือง #FEF08A)</option>
+      </select>
+      <label>ชื่อวันหยุด (แสดงด้านล่างปฏิทิน):</label>
+      <input type="text" id="modalName" placeholder="เช่น New Year's day หรือ Interchange day">
+      <div class="modal-actions">
+        <button class="btn-slate" style="padding:6px 12px;border-radius:6px;border:none;color:#fff;cursor:pointer;" onclick="closeModal()">ยกเลิก</button>
+        <button class="btn-primary" style="padding:6px 14px;border-radius:6px;border:none;cursor:pointer;" onclick="saveModal()">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+  const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const DAYS_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+  let currentYear = 2027;
+  let clickMode = 'quick'; // 'quick' | 'edit'
+  let holidays = {}; // key: "YYYY-MM-DD" => { type: 'national'|'special'|'sport', name: '...' }
+  let editingKey = null;
+
+  // เติมตัวเลือกปี 2025 - 2035
+  const yearSel = document.getElementById('yearSelect');
+  for (let y = 2025; y <= 2035; y++) {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    if (y === currentYear) opt.selected = true;
+    yearSel.appendChild(opt);
+  }
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function dateKey(y, m, d) { return `${y}-${pad(m+1)}-${pad(d)}`; }
+
+  function setMode(m) {
+    clickMode = m;
+    document.getElementById('btnModeQuick').classList.toggle('mode-active', m === 'quick');
+    document.getElementById('btnModeEdit').classList.toggle('mode-active', m === 'edit');
+  }
+
+  // โหลดวันหยุดราชการไทยพื้นฐานของปีที่เลือก
+  function loadThaiHolidays() {
+    const y = currentYear;
+    const fixed = [
+      [0, 1, "New Year's day"],
+      [3, 13, "Songkran day"],
+      [3, 14, "Songkran day"],
+      [3, 15, "Songkran day"],
+      [4, 1, "National Labour day"],
+      [5, 3, "Queen's Birthday"],
+      [6, 28, "King's Birthday"],
+      [7, 12, "Mother's Birthday"],
+      [9, 13, "King Bhumibol Memorial day"],
+      [11, 5, "Father's day"],
+      [11, 31, "New Year's Eve Day"]
+    ];
+    // วันสำคัญทางศาสนา (ตัวอย่างปี 2026-2028)
+    const lunar = {
+      2026: [[2, 3, "Makha Bucha day"]],
+      2027: [[1, 21, "Makha Bucha day"], [1, 22, "Sub. Makha Bucha day"]],
+      2028: [[1, 10, "Makha Bucha day"]]
+    };
+    fixed.concat(lunar[y] || []).forEach(([m, d, name]) => {
+      holidays[dateKey(y, m, d)] = { type: 'national', name };
+    });
+    renderCalendar();
+  }
+
+  // จัดเสาร์เว้นเสาร์อัตโนมัติ (offset 0 = เริ่มเสาร์แรกของปี, 1 = เริ่มเสาร์ที่สอง)
+  function applyAltSaturdays(offset) {
+    // ล้างเฉพาะวันเสาร์ที่เป็น special เดิม
+    Object.keys(holidays).forEach(k => {
+      if (holidays[k].type === 'special') delete holidays[k];
+    });
+    let satCount = 0;
+    for (let m = 0; m < 12; m++) {
+      const daysInMonth = new Date(currentYear, m + 1, 0).getDate();
+      for (let d = 1; d <= daysInMonth; d++) {
+        if (new Date(currentYear, m, d).getDay() === 6) {
+          if (satCount % 2 === offset) {
+            const k = dateKey(currentYear, m, d);
+            if (!holidays[k]) {
+              holidays[k] = { type: 'special', name: 'Interchange day' };
+            }
+          }
+          satCount++;
+        }
+      }
+    }
+    renderCalendar();
+  }
+
+  function changeYear() {
+    currentYear = parseInt(yearSel.value, 10);
+    holidays = {};
+    document.getElementById('calSubtitle').textContent = `Calendar ${currentYear}`;
+    document.getElementById('reopenNote').textContent = `*เปิดทำงานปีใหม่ January 4, ${currentYear + 1}`;
+    loadThaiHolidays();
+    applyAltSaturdays(0);
+  }
+
+  function handleDayClick(k) {
+    if (clickMode === 'quick') {
+      const cur = holidays[k];
+      if (!cur) holidays[k] = { type: 'national', name: 'National Holiday' };
+      else if (cur.type === 'national') holidays[k] = { type: 'special', name: 'Interchange day' };
+      else if (cur.type === 'special') holidays[k] = { type: 'sport', name: 'Sport day' };
+      else delete holidays[k];
+      renderCalendar();
+    } else {
+      editingKey = k;
+      const cur = holidays[k] || { type: '', name: '' };
+      document.getElementById('modalDateLabel').textContent = `แก้ไขวันที่ ${k}`;
+      document.getElementById('modalType').value = cur.type;
+      document.getElementById('modalName').value = cur.name;
+      document.getElementById('editModal').style.display = 'flex';
+    }
+  }
+
+  function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+  function saveModal() {
+    const t = document.getElementById('modalType').value;
+    const n = document.getElementById('modalName').value.trim();
+    if (!t) delete holidays[editingKey];
+    else holidays[editingKey] = { type: t, name: n || (t === 'special' ? 'Interchange day' : t === 'sport' ? 'Sport day' : 'Holiday') };
+    closeModal();
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    const grid = document.getElementById('monthsGrid');
+    grid.innerHTML = '';
+    let totalWork = 0, natCount = 0, spcCount = 0;
+    let sportDates = [];
+    const listItems = [];
+
+    for (let m = 0; m < 12; m++) {
+      const firstDay = new Date(currentYear, m, 1).getDay();
+      const daysInMonth = new Date(currentYear, m + 1, 0).getDate();
+      let monthWork = 0;
+
+      // สร้างโครงตาราง 5 แถว (ถ้าเกิน 35 ช่อง รวมวันท้ายไว้ช่องเดียวเหมือนไฟล์ Excel เช่น 24/31)
+      const cells = Array(35).fill(null).map(() => []);
+      for (let d = 1; d <= daysInMonth; d++) {
+        const pos = firstDay + d - 1;
+        const idx = pos < 35 ? pos : pos - 7;
+        cells[idx].push(d);
+
+        const dow = new Date(currentYear, m, d).getDay();
+        const k = dateKey(currentYear, m, d);
+        const h = holidays[k];
+        if (h) {
+          if (h.type === 'national') natCount++;
+          else if (h.type === 'special') spcCount++;
+          else if (h.type === 'sport') sportDates.push(`${d} ${MONTHS[m]} ${currentYear}`);
+          listItems.push({ k, label: `${DAYS_SHORT[dow]} ${d} ${MONTHS_SHORT[m]} : ${h.name}`, type: h.type });
+        } else if (dow !== 0) {
+          monthWork++;
+        }
+      }
+      totalWork += monthWork;
+
+      let rowsHtml = '';
+      for (let r = 0; r < 5; r++) {
+        rowsHtml += '<tr>';
+        for (let c = 0; c < 7; c++) {
+          const daysArr = cells[r * 7 + c];
+          if (daysArr.length === 0) {
+            rowsHtml += '<td></td>';
+          } else {
+            const mainDay = daysArr[0];
+            const k = dateKey(currentYear, m, mainDay);
+            const h = holidays[k];
+            const bgCls = h ? (h.type === 'national' ? 'bg-national' : h.type === 'special' ? 'bg-special' : 'bg-sport') : '';
+            const sunCls = c === 0 ? 'sun-col' : '';
+            const text = daysArr.join('/');
+            rowsHtml += `<td class="day-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${k}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${text}</td>`;
+          }
+        }
+        rowsHtml += '</tr>';
+      }
+
+      grid.innerHTML += `
+        <div class="month-card">
+          <div class="month-title">${MONTHS[m]}</div>
+          <table class="month-table">
+            <tr class="th-th"><th class="sun-col">อา</th><th>จ</th><th>อ</th><th>พ</th><th>พฤ</th><th>ศ</th><th>ส</th></tr>
+            <tr class="th-en"><th class="sun-col">SUN</th><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>
+            ${rowsHtml}
+          </table>
+          <div class="workday-row">Working Day = ${monthWork}</div>
+        </div>
+      `;
+    }
+
+    // อัปเดตรายการวันหยุดด้านล่างและกล่องสรุป
+    const holDiv = document.getElementById('holidayList');
+    holDiv.innerHTML = listItems.map(item => {
+      const cls = item.type === 'national' ? 'nat' : item.type === 'special' ? 'spc' : 'spt';
+      return `<div class="hol-item ${cls}" onclick="handleDayClick('${item.k}')" style="cursor:pointer" title="คลิกเพื่อแก้ไข">${item.label}</div>`;
+    }).join('');
+
+    document.getElementById('sumWork').textContent = totalWork;
+    document.getElementById('sumNat').textContent = natCount;
+    document.getElementById('sumSpc').textContent = spcCount;
+    document.getElementById('sumSport').textContent = sportDates.length
+      ? `Sport day ${sportDates.length} day (${sportDates.join(', ')})`
+      : `Sport day 0 day`;
+  }
+
+  function uploadLogo(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = document.getElementById('companyLogo');
+      img.src = ev.target.result;
+      img.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function exportJSON() {
+    const data = { year: currentYear, holidays, reopenNote: document.getElementById('reopenNote').textContent };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `Calendar_${currentYear}.json`;
+    a.click();
+  }
+
+  function importJSON(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const data = JSON.parse(ev.target.result);
+      currentYear = data.year || 2027;
+      yearSel.value = currentYear;
+      holidays = data.holidays || {};
+      document.getElementById('calSubtitle').textContent = `Calendar ${currentYear}`;
+      if (data.reopenNote) document.getElementById('reopenNote').textContent = data.reopenNote;
+      renderCalendar();
+    };
+    reader.readAsText(file);
+  }
+
+  // เริ่มต้นโหลดปี 2027
+  changeYear();
+</script>
+</body>
+</html>
