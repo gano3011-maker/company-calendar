@@ -12,6 +12,8 @@
       /* ฟอนต์ & ขนาดตัวอักษรทุกส่วน */
       --main-font: 'supermarket', Tahoma, sans-serif;
       --company-size: 38px;
+      --company-weight: 700;
+      --company-stroke: 0px;
       --subtitle-size: 19px;
       --month-title-size: 13px;
       --th-th-size: 10px;
@@ -61,7 +63,6 @@
     @font-face {
       font-family: 'CLC Logo';
       src: local('CLC Logo'), url('CLCLogo.ttf') format('truetype');
-      font-weight: bold;
     }
     @font-face {
       font-family: 'supermarket';
@@ -289,7 +290,8 @@
     .company-name {
       font-family: 'CLC Logo', var(--main-font);
       font-size: var(--company-size);
-      font-weight: bold;
+      font-weight: var(--company-weight);
+      -webkit-text-stroke: var(--company-stroke) #000000;
       line-height: 1.05;
       letter-spacing: 0.6px;
       margin-bottom: 3px;
@@ -350,6 +352,7 @@
       line-height: var(--row-height);
       font-size: var(--day-font-size);
       color: var(--day-text-color);
+      padding: 0;
     }
     .month-table tr.th-th th {
       background: var(--month-header-bg);
@@ -384,20 +387,28 @@
     }
     .day-cell:hover { filter: brightness(0.92); outline: 1px solid #3b82f6; }
 
+    /* กล่องชั้นในเพื่อให้ดาวแฉกและเส้นทแยงมุมอยู่ตรงกลางช่องเสมอ */
+    .cell-inner {
+      position: relative;
+      width: 100%;
+      height: var(--row-height);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     /* สีวันหยุด & สัญลักษณ์ดาวแฉกวันกีฬาสี */
     .bg-national { background-color: var(--color-national) !important; }
     .bg-special  { background-color: var(--color-special) !important; }
-    .bg-sport {
-      position: relative;
-      background-color: transparent !important;
-    }
+    .bg-sport    { background-color: transparent !important; }
+
     .sport-star-svg {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 92%;
-      height: 98%;
+      width: 94%;
+      height: 100%;
       pointer-events: none;
       z-index: 0;
     }
@@ -407,9 +418,7 @@
     }
 
     /* ช่องวันที่คู่แบบมีเส้นทแยงมุม */
-    .split-cell {
-      position: relative;
-      padding: 0 !important;
+    .split-cell .cell-inner {
       background-image: linear-gradient(to bottom right, transparent calc(50% - 0.6px), #334155 50%, transparent calc(50% + 0.6px));
     }
     .split-top {
@@ -652,8 +661,20 @@
         </div>
 
         <div class="ctrl-group">
-          <div class="ctrl-group-title">ขนาดตัวอักษรส่วนหัว</div>
-          <div class="ctrl-item"><label>ชื่อบริษัท</label><input type="range" id="cfgCompanySize" min="24" max="50" oninput="updateDesign()"><span class="ctrl-val" id="valCompanySize"></span></div>
+          <div class="ctrl-group-title">ขนาด &amp; ความหนาส่วนหัว</div>
+          <div class="ctrl-item">
+            <label>ขนาดชื่อบริษัท</label>
+            <input type="range" id="cfgCompanySize" min="24" max="50" oninput="updateDesign()">
+            <span class="ctrl-val" id="valCompanySize"></span>
+          </div>
+          <div class="ctrl-item">
+            <label>ความหนาชื่อบริษัท</label>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <button class="mini-btn" id="btnCompanyBold" onclick="toggleCompanyBold()"><b>B</b></button>
+              <input type="range" id="cfgCompanyStroke" min="0" max="2" step="0.1" style="width:58px;" oninput="updateDesign()">
+              <span class="ctrl-val" id="valCompanyStroke" style="min-width:28px;"></span>
+            </div>
+          </div>
           <div class="ctrl-item"><label>Calendar 2027</label><input type="range" id="cfgSubtitleSize" min="13" max="26" oninput="updateDesign()"><span class="ctrl-val" id="valSubtitleSize"></span></div>
           <div class="ctrl-item"><label>ชื่อเดือน (JAN-DEC)</label><input type="range" id="cfgMonthTitleSize" min="10" max="18" step="0.5" oninput="updateDesign()"><span class="ctrl-val" id="valMonthTitleSize"></span></div>
         </div>
@@ -860,6 +881,8 @@
   const DEFAULT_DESIGN = {
     mainFont: "'supermarket', Tahoma, sans-serif",
     companySize: 38,
+    companyBold: true,
+    companyStroke: 0,
     subtitleSize: 19,
     monthTitleSize: 13,
     thThSize: 10,
@@ -959,6 +982,13 @@
     btnEl.classList.add('active');
   }
 
+  function toggleCompanyBold() {
+    design.companyBold = !design.companyBold;
+    syncDesignInputs();
+    applyDesign();
+    saveDesignLocal();
+  }
+
   function toggleDayStyle(type) {
     if (type === 'bold') design.dayBold = !design.dayBold;
     if (type === 'italic') design.dayItalic = !design.dayItalic;
@@ -981,6 +1011,8 @@
   function syncDesignInputs() {
     document.getElementById('cfgMainFont').value = design.mainFont;
     document.getElementById('cfgCompanySize').value = design.companySize;
+    document.getElementById('btnCompanyBold').classList.toggle('active', design.companyBold);
+    document.getElementById('cfgCompanyStroke').value = design.companyStroke;
     document.getElementById('cfgSubtitleSize').value = design.subtitleSize;
     document.getElementById('cfgMonthTitleSize').value = design.monthTitleSize;
     document.getElementById('cfgThThSize').value = design.thThSize;
@@ -1035,6 +1067,8 @@
     const r = document.documentElement.style;
     r.setProperty('--main-font', design.mainFont);
     r.setProperty('--company-size', design.companySize + 'px');
+    r.setProperty('--company-weight', design.companyBold ? '700' : '400');
+    r.setProperty('--company-stroke', design.companyStroke + 'px');
     r.setProperty('--subtitle-size', design.subtitleSize + 'px');
     r.setProperty('--month-title-size', design.monthTitleSize + 'px');
     r.setProperty('--th-th-size', design.thThSize + 'px');
@@ -1080,6 +1114,7 @@
       `@page { size: A4 landscape; margin: ${design.printMarginY}mm ${design.printMarginX}mm; }`;
 
     document.getElementById('valCompanySize').textContent = design.companySize + 'px';
+    document.getElementById('valCompanyStroke').textContent = design.companyStroke + 'px';
     document.getElementById('valSubtitleSize').textContent = design.subtitleSize + 'px';
     document.getElementById('valMonthTitleSize').textContent = design.monthTitleSize + 'px';
     document.getElementById('valThThSize').textContent = design.thThSize + 'px';
@@ -1116,6 +1151,7 @@
       ...design,
       mainFont: document.getElementById('cfgMainFont').value,
       companySize: Number(document.getElementById('cfgCompanySize').value),
+      companyStroke: Number(document.getElementById('cfgCompanyStroke').value),
       subtitleSize: Number(document.getElementById('cfgSubtitleSize').value),
       monthTitleSize: Number(document.getElementById('cfgMonthTitleSize').value),
       thThSize: Number(document.getElementById('cfgThThSize').value),
@@ -1337,9 +1373,9 @@
             const sunCls = c === 0 ? 'sun-col' : '';
             const starHtml = isSport ? SPORT_STAR_SVG : '';
             if (daysArr.length === 2) {
-              rowsHtml += `<td class="day-cell split-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${starHtml}<span class="split-top">${daysArr[0]}</span><span class="split-bottom">${daysArr[1]}</span></td>`;
+              rowsHtml += `<td class="day-cell split-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}"><div class="cell-inner">${starHtml}<span class="split-top">${daysArr[0]}</span><span class="split-bottom">${daysArr[1]}</span></div></td>`;
             } else {
-              rowsHtml += `<td class="day-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}">${starHtml}<span class="day-num-inner">${daysArr[0]}</span></td>`;
+              rowsHtml += `<td class="day-cell ${bgCls} ${sunCls}" onclick="handleDayClick('${activeKey}')" title="${h ? h.name : 'คลิกเพื่อแก้ไข'}"><div class="cell-inner">${starHtml}<span class="day-num-inner">${daysArr[0]}</span></div></td>`;
             }
           }
         }
