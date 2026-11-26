@@ -32,6 +32,8 @@
 
       --summary-size: 10px;
       --sign-size: 15.5px;
+      --summary-width: 250px;
+      --summary-mr: 0px;
 
       --logo-size: 84px;
       --logo-top: -2px;
@@ -416,7 +418,7 @@
 
     /* ส่วนล่าง: รายการวันหยุด + กล่องสรุป */
     .footer-section { margin-top: var(--footer-gap-top); }
-    .footer-grid { display: grid; grid-template-columns: 3.1fr 1.15fr; gap: 12px; align-items: start; }
+    .footer-grid { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
     .holiday-list {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -433,7 +435,10 @@
     .hol-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 2px; }
     .hol-item:hover { background: #f1f5f9; }
 
-    .summary-box {
+.summary-box {
+      width: var(--summary-width);
+      margin-right: var(--summary-mr);
+      border: 1.5px solid #000;
       border: 1.5px solid #000;
       font-family: Calibri, Tahoma, sans-serif;
       font-size: var(--summary-size);
@@ -587,6 +592,8 @@
 
           <div class="card">
             <div class="card-title">🖨️ ระยะห่างส่วนล่าง &amp; พิมพ์ A4</div>
+            <div class="row"><label>ความกว้างกล่องสรุป</label><input type="range" id="cfgSummaryWidth" min="180" max="340" step="2" oninput="onDesignChange()"><span class="val" id="valSummaryWidth"></span></div>
+            <div class="row"><label>ขยับกล่องสรุปเข้าซ้าย</label><input type="range" id="cfgSummaryMr" min="0" max="60" step="1" oninput="onDesignChange()"><span class="val" id="valSummaryMr"></span></div>
             <div class="row"><label>ช่องว่างก่อนรายการ</label><input type="range" id="cfgFooterGap" min="0" max="30" oninput="onDesignChange()"><span class="val" id="valFooterGap"></span></div>
             <div class="row"><label>ช่องว่างเหนือลายเซ็น</label><input type="range" id="cfgSignMargin" min="4" max="34" oninput="onDesignChange()"><span class="val" id="valSignMargin"></span></div>
             <div class="row"><label>ขอบพิมพ์ บน-ล่าง</label><input type="range" id="cfgPrintMarginY" min="3" max="18" oninput="onDesignChange()"><span class="val" id="valPrintMarginY"></span></div>
@@ -818,6 +825,8 @@
     holSpacing: 0,
     holLineHeight: 1.25,
     summarySize: 10,
+    summaryWidth: 250,
+ summaryMr: 0,
     signSize: 15.5,
 
     logoSize: 84,
@@ -1121,6 +1130,8 @@
     document.getElementById('cfgHolLineHeight').value = design.holLineHeight;
 
     document.getElementById('cfgSummarySize').value = design.summarySize;
+    document.getElementById('cfgSummaryWidth').value = design.summaryWidth;
+ document.getElementById('cfgSummaryMr').value = design.summaryMr;
     document.getElementById('cfgSignSize').value = design.signSize;
 
     document.getElementById('cfgLogoSize').value = design.logoSize;
@@ -1175,6 +1186,8 @@
     r.setProperty('--hol-list-lh', design.holLineHeight);
 
     r.setProperty('--summary-size', design.summarySize + 'px');
+    r.setProperty('--summary-width', design.summaryWidth + 'px');
+ r.setProperty('--summary-mr', design.summaryMr + 'px');
     r.setProperty('--sign-size', design.signSize + 'px');
 
     r.setProperty('--logo-size', design.logoSize + 'px');
@@ -1222,6 +1235,8 @@
     setV('valHolSpacing', design.holSpacing + 'px');
     setV('valHolLineHeight', Number(design.holLineHeight).toFixed(2));
     setV('valSummarySize', design.summarySize + 'px');
+    setV('valSummaryWidth', design.summaryWidth + 'px');
+ setV('valSummaryMr', design.summaryMr + 'px');
     setV('valSignSize', design.signSize + 'px');
     setV('valLogoSize', design.logoSize + 'px');
     setV('valLogoTop', design.logoTop + 'px');
@@ -1257,6 +1272,8 @@
       holSpacing: Number(g('cfgHolSpacing').value),
       holLineHeight: Number(g('cfgHolLineHeight').value),
       summarySize: Number(g('cfgSummarySize').value),
+      summaryWidth: Number(g('cfgSummaryWidth').value),
+   summaryMr: Number(g('cfgSummaryMr').value),
       signSize: Number(g('cfgSignSize').value),
       logoSize: Number(g('cfgLogoSize').value),
       logoTop: Number(g('cfgLogoTop').value),
