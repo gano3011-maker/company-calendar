@@ -685,7 +685,8 @@
 
     <div class="top-group">
       <span id="saveStatus" class="save-status">✓ บันทึกแล้ว</span>
-      <button class="btn-green" onclick="manualSave()">💾 Save</button>
+      <button class="btn-green" onclick="manualSave(false, true)">💾 Save</button>
+      <button class="btn-slate" onclick="pullFromCloud(false)" title="ดึงข้อมูลล่าสุดจาก Google Sheets">🔄 ซิงค์</button>
       <button class="btn-purple" onclick="saveVersionPrompt()">📌 เก็บเวอร์ชัน</button>
       <button class="btn-slate" onclick="exportJSON()" title="สำรองไฟล์ทั้งหมด">📤 JSON</button>
       <label class="btn btn-slate" title="เปิดไฟล์สำรอง">📥 เปิด <input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
@@ -835,7 +836,7 @@
               <input type="text" id="verNameInput" placeholder="เช่น รอบที่ 1 - ม่วงพาสเทล" style="flex:1;padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;font-size:11.5px;">
               <button class="btn-purple" style="padding:6px 10px;border:none;border-radius:6px;cursor:pointer;font-size:11.5px;" onclick="saveVersion()">+ บันทึก</button>
             </div>
-            <div style="font-size:10px;color:#64748b;">*เก็บทั้งดีไซน์ วันหยุด และข้อความเพิ่มเติมไว้ครบ สามารถกดดูหรือสั่งพิมพ์ PDF ของแต่ละรอบได้เลย</div>
+            <div style="font-size:10px;color:#64748b;">*เก็บทั้งดีไซน์ วันหยุด และข้อความเพิ่มเติมไว้ครบ ซิงค์อัตโนมัติระหว่างคอมและ iPad</div>
           </div>
 
           <div id="versionList"></div>
@@ -946,6 +947,8 @@
   </div>
 
 <script>
+  const CLOUD_SYNC_URL = "https://script.google.com/macros/s/AKfycbzYKR62wwyLx85Dcpu3Jy7lALq_k_jfI2TReeaQPi1xCPuasWiufv29e0vcSdljiWM/exec";
+
   const MONTHS = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
   const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const DAYS_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -1160,13 +1163,28 @@
     document.getElementById('btnRedo').disabled = redoStack.length === 0;
   }
 
-  function markUnsaved() {
+  function setStatus(text, isUnsaved = false) {
     const el = document.getElementById('saveStatus');
-    el.textContent = '● ยังไม่ได้กด Save';
-    el.classList.add('unsaved');
+    el.textContent = text;
+    el.classList.toggle('unsaved', isUnsaved);
   }
 
-  function manualSave(silent = false) {
+  function markUnsaved() {
+    setStatus('● ยังไม่ได้กด Save', true);
+  }
+
+  function buildPayload(savedAt) {
+    return {
+      savedAt,
+      year: currentYear,
+      design,
+      calendarsByYear,
+      versions
+    };
+  }
+
+  function manualSave(silent = false, syncCloud = false) {
+    const now = Date.now();
     calendarsByYear[currentYear] = {
       holidays: JSON.parse(JSON.stringify(holidays)),
       textBoxes: JSON.parse(JSON.stringify(textBoxes)),
@@ -1183,11 +1201,81 @@
       localStorage.setItem('clc_studio_design_v3', JSON.stringify(design));
       localStorage.setItem('clc_studio_years_v3', JSON.stringify(calendarsByYear));
       localStorage.setItem('clc_studio_versions_v3', JSON.stringify(versions));
-      localStorage.setItem('clc_studio_saved_at_v3', String(Date.now()));
+      localStorage.setItem('clc_studio_saved_at_v3', String(now));
     } catch (e) {}
-    const el = document.getElementById('saveStatus');
-    el.textContent = silent ? '✓ บันทึกแล้ว' : '✓ บันทึกสำเร็จ!';
-    el.classList.remove('unsaved');
+
+    if (syncCloud && CLOUD_SYNC_URL) {
+      pushToCloud(now);
+    } else {
+      setStatus(silent ? '✓ บันทึกแล้ว' : '✓ บันทึกสำเร็จ!', false);
+    }
+  }
+
+  async function pushToCloud(savedAt) {
+    setStatus('☁️ กำลังซิงค์...', true);
+    try {
+      const res = await fetch(CLOUD_SYNC_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(buildPayload(savedAt))
+      });
+      if (res.ok) {
+        setStatus('✓ ซิงค์คลาวด์แล้ว', false);
+      } else {
+        setStatus('✓ เซฟในเครื่องแล้ว', false);
+      }
+    } catch (e) {
+      setStatus('✓ เซฟในเครื่องแล้ว (ออฟไลน์)', false);
+    }
+  }
+
+  function applyRemoteData(remote) {
+    if (remote.design) design = { ...DEFAULT_DESIGN, ...remote.design };
+    if (remote.calendarsByYear) calendarsByYear = remote.calendarsByYear;
+    if (remote.versions) versions = remote.versions;
+    if (remote.year) {
+      currentYear = remote.year;
+      yearSel.value = currentYear;
+    }
+    try {
+      localStorage.setItem('clc_studio_design_v3', JSON.stringify(design));
+      localStorage.setItem('clc_studio_years_v3', JSON.stringify(calendarsByYear));
+      localStorage.setItem('clc_studio_versions_v3', JSON.stringify(versions));
+      if (remote.savedAt) {
+        localStorage.setItem('clc_studio_saved_at_v3', String(remote.savedAt));
+      }
+    } catch (e) {}
+    syncInputs();
+    applyDesign();
+    renderTemplates();
+    renderVersions();
+    loadYearIntoView();
+  }
+
+  async function pullFromCloud(silent = false) {
+    if (!CLOUD_SYNC_URL) return false;
+    if (!silent) setStatus('☁️ กำลังดึงข้อมูล...', true);
+    try {
+      const res = await fetch(CLOUD_SYNC_URL + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('Network error');
+      const remote = await res.json();
+      if (remote && !remote.empty && remote.calendarsByYear) {
+        const localSavedAt = Number(localStorage.getItem('clc_studio_saved_at_v3') || 0);
+        const hasLocalData = !!localStorage.getItem('clc_studio_years_v3');
+        if (!silent || !hasLocalData || !localSavedAt || (remote.savedAt && remote.savedAt > localSavedAt)) {
+          applyRemoteData(remote);
+          setStatus('✓ ซิงค์คลาวด์แล้ว', false);
+          return true;
+        }
+        if (!silent) setStatus('✓ ข้อมูลล่าสุดแล้ว', false);
+        return true;
+      }
+      if (!silent) setStatus('✓ ยังไม่มีข้อมูลบนคลาวด์', false);
+      return false;
+    } catch (e) {
+      if (!silent) setStatus('⚠️ เชื่อมต่อคลาวด์ไม่ได้', true);
+      return false;
+    }
   }
 
   /* =========================================================
@@ -1296,7 +1384,6 @@
       content.textContent = tb.text;
       el.appendChild(content);
 
-      // ลากย้ายด้วย Pointer Events (รองรับทั้งเมาส์และ iPad)
       el.addEventListener('pointerdown', e => {
         e.stopPropagation();
         selectTextBox(tb.id);
@@ -1330,7 +1417,6 @@
         document.addEventListener('pointerup', onUp);
       });
 
-      // ดับเบิลคลิกเพื่อพิมพ์แก้ไขข้อความโดยตรง
       el.addEventListener('dblclick', e => {
         e.stopPropagation();
         enterTextBoxEdit(tb.id, content, false);
@@ -1455,7 +1541,6 @@
     pushUndo(true);
   }
 
-  // คลิกพื้นที่ว่างเพื่อยกเลิกการเลือกกล่องข้อความและปิดเมนูดรอปดาวน์
   document.addEventListener('pointerdown', e => {
     if (!e.target.closest('.text-dropdown-wrap')) {
       document.getElementById('textMenuDropdown').classList.remove('open');
@@ -1493,7 +1578,7 @@
       reopenNote: document.getElementById('reopenNote').textContent
     });
     inp.value = '';
-    manualSave(true);
+    manualSave(true, true);
     renderVersions();
   }
 
@@ -1525,7 +1610,7 @@
   function deleteVersion(id) {
     if (!confirm('ลบประวัติเวอร์ชันนี้ใช่หรือไม่?')) return;
     versions = versions.filter(x => x.id !== id);
-    manualSave(true);
+    manualSave(true, true);
     renderVersions();
   }
 
@@ -1851,9 +1936,7 @@
     return { holidays: map, textBoxes: [], reopenNote: defaultReopenText(y) };
   }
 
-  function changeYear() {
-    if (Object.keys(holidays).length) manualSave(true);
-    currentYear = parseInt(yearSel.value, 10);
+  function loadYearIntoView() {
     if (!calendarsByYear[currentYear]) calendarsByYear[currentYear] = buildDefaultYear(currentYear);
     const yData = calendarsByYear[currentYear];
     holidays = JSON.parse(JSON.stringify(yData.holidays || {}));
@@ -1870,6 +1953,12 @@
     }
     renderCalendar();
     renderTextBoxes();
+  }
+
+  function changeYear() {
+    if (Object.keys(holidays).length) manualSave(true, false);
+    currentYear = parseInt(yearSel.value, 10);
+    loadYearIntoView();
     pushUndo(true);
   }
 
@@ -2021,16 +2110,9 @@
   }
 
   function exportJSON() {
-    manualSave(true);
-    const data = {
-      savedAt: Date.now(),
-      year: currentYear,
-      design,
-      calendarsByYear,
-      versions
-    };
+    manualSave(true, false);
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(buildPayload(Date.now()), null, 2)], { type: 'application/json' }));
     a.download = 'data.json';
     a.click();
   }
@@ -2048,12 +2130,8 @@
       if (data.holidays && !calendarsByYear[currentYear]) {
         calendarsByYear[currentYear] = { holidays: data.holidays, textBoxes: [], reopenNote: data.reopenNote || defaultReopenText(currentYear) };
       }
-      const yData = calendarsByYear[currentYear] || buildDefaultYear(currentYear);
-      holidays = JSON.parse(JSON.stringify(yData.holidays || {}));
-      textBoxes = JSON.parse(JSON.stringify(yData.textBoxes || []));
-      document.getElementById('calSubtitle').textContent = yData.calSubtitle || `Calendar ${currentYear}`;
-      document.getElementById('reopenNote').textContent = yData.reopenNote || defaultReopenText(currentYear);
-      syncInputs(); applyDesign(); renderTemplates(); renderVersions(); renderCalendar(); renderTextBoxes(); manualSave(true); pushUndo(true);
+      syncInputs(); applyDesign(); renderTemplates(); renderVersions(); loadYearIntoView();
+      manualSave(true, true); pushUndo(true);
     };
     rd.readAsText(f);
   }
@@ -2065,7 +2143,7 @@
       document.activeElement.tagName === 'INPUT' ||
       document.activeElement.tagName === 'TEXTAREA'
     );
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); manualSave(); return; }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); manualSave(false, true); return; }
     if (isTyping) return;
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
     if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); redo(); }
@@ -2081,34 +2159,27 @@
 
   async function initApp() {
     loadStorage();
-    try {
-      const res = await fetch('./data.json?t=' + Date.now(), { cache: 'no-store' });
-      if (res.ok) {
-        const remote = await res.json();
-        const localSavedAt = Number(localStorage.getItem('clc_studio_saved_at_v3') || 0);
-        const hasLocalData = !!localStorage.getItem('clc_studio_years_v3');
-        if (!hasLocalData || !localSavedAt || (remote.savedAt && remote.savedAt > localSavedAt)) {
-          if (remote.design) design = { ...DEFAULT_DESIGN, ...remote.design };
-          if (remote.calendarsByYear) calendarsByYear = remote.calendarsByYear;
-          if (remote.versions) versions = remote.versions;
-          if (remote.year) {
-            currentYear = remote.year;
-            yearSel.value = currentYear;
-          }
-          localStorage.setItem('clc_studio_design_v3', JSON.stringify(design));
-          localStorage.setItem('clc_studio_years_v3', JSON.stringify(calendarsByYear));
-          localStorage.setItem('clc_studio_versions_v3', JSON.stringify(versions));
-          if (remote.savedAt) {
-            localStorage.setItem('clc_studio_saved_at_v3', String(remote.savedAt));
-          }
-        }
-      }
-    } catch (e) {}
     syncInputs();
     applyDesign();
     renderTemplates();
     renderVersions();
-    changeYear();
+    loadYearIntoView();
+    pushUndo(true);
+
+    const synced = await pullFromCloud(true);
+    if (!synced) {
+      try {
+        const res = await fetch('./data.json?t=' + Date.now(), { cache: 'no-store' });
+        if (res.ok) {
+          const remote = await res.json();
+          const localSavedAt = Number(localStorage.getItem('clc_studio_saved_at_v3') || 0);
+          const hasLocalData = !!localStorage.getItem('clc_studio_years_v3');
+          if (!hasLocalData || !localSavedAt || (remote.savedAt && remote.savedAt > localSavedAt)) {
+            applyRemoteData(remote);
+          }
+        }
+      } catch (e) {}
+    }
   }
 
   initApp();
