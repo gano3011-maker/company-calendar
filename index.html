@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Company Annual Calendar Studio</title>
+  <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon.png?v=3">
-<link rel="apple-touch-icon" href="icon.png?v=3">
+  <link rel="apple-touch-icon" href="icon.png?v=3">
   <meta name="theme-color" content="#1e1b4b">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -103,7 +104,7 @@
       font-size: 12px;
       border-bottom: 2px solid #4c1d95;
       flex-shrink: 0;
-      z-index: 20;
+      z-index: 40;
     }
     .top-group { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
     .topbar select, .topbar button, .topbar label.btn {
@@ -124,8 +125,41 @@
     .btn-amber { background: #f59e0b; color: #000; font-weight: bold; }
     .btn-gold { background: #eab308; color: #0f172a; font-weight: bold; }
     .btn-pink { background: #db2777; color: #fff; font-weight: bold; }
+    .btn-cyan { background: #06b6d4; color: #0f172a; font-weight: bold; }
     .btn-slate { background: #334155; color: #fff; }
     .mode-active { outline: 2px solid #fde047; }
+
+    /* เมนูดรอปดาวน์เพิ่มข้อความ / ตราประทับ */
+    .text-dropdown-wrap { position: relative; display: inline-block; }
+    .text-menu-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      background: #fff;
+      color: #1e293b;
+      min-width: 195px;
+      border-radius: 9px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.25);
+      border: 1px solid #e2e8f0;
+      padding: 5px;
+      z-index: 100;
+    }
+    .text-menu-dropdown.open { display: block; }
+    .text-menu-dropdown button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      color: #1e293b;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: normal;
+    }
+    .text-menu-dropdown button:hover { background: #f3e8ff; color: #5b21b6; }
 
     .save-status {
       font-size: 11px;
@@ -275,13 +309,67 @@
       overflow: auto;
       padding: 16px;
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: center;
       background: #cbd5e1;
+      position: relative;
     }
+
+    /* แถบแต่งข้อความแบบลอยสไตล์ Canva */
+    .floating-text-toolbar {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 35;
+      background: #ffffff;
+      border: 1px solid #ddd6fe;
+      box-shadow: 0 6px 20px rgba(30, 27, 75, 0.18);
+      border-radius: 10px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11.5px;
+      max-width: 100%;
+    }
+    .floating-text-toolbar.active { display: flex; }
+    .ftb-sep { width: 1px; height: 20px; background: #e2e8f0; margin: 0 2px; }
+    .floating-text-toolbar select,
+    .floating-text-toolbar input[type="number"] {
+      height: 26px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 0 5px;
+      font-size: 11.5px;
+      font-family: Tahoma, sans-serif;
+    }
+    .floating-text-toolbar input[type="color"] {
+      width: 24px; height: 24px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; padding: 0;
+    }
+    .ftb-btn {
+      height: 26px;
+      padding: 0 8px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #1e293b;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 11.5px;
+      font-family: Tahoma, sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .ftb-btn:hover { background: #f3e8ff; border-color: #a78bfa; }
+    .ftb-btn.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+    .ftb-btn-danger { color: #dc2626; border-color: #fecaca; }
+    .ftb-btn-danger:hover { background: #fee2e2; border-color: #f87171; }
+    .ftb-label { font-size: 10.5px; color: #475569; display: inline-flex; align-items: center; gap: 3px; }
 
     /* หน้ากระดาษ A4 แนวนอน */
     .a4-sheet {
+      position: relative;
       width: 297mm;
       min-height: 205mm;
       background: #fff;
@@ -294,6 +382,65 @@
       color: #000;
       flex-shrink: 0;
     }
+
+    /* เลเยอร์ข้อความอิสระแบบ Canva */
+    .text-overlay-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 25;
+      overflow: hidden;
+    }
+    .canvas-textbox {
+      position: absolute;
+      pointer-events: auto;
+      cursor: move;
+      min-width: 36px;
+      padding: 3px 10px;
+      border-radius: 5px;
+      line-height: 1.2;
+      white-space: pre-wrap;
+      user-select: none;
+      border: 1.5px solid transparent;
+      transition: box-shadow 0.12s ease;
+    }
+    .canvas-textbox:hover {
+      outline: 1.5px dashed #8b5cf6;
+      outline-offset: 2px;
+    }
+    .canvas-textbox.selected {
+      outline: 2px solid #7c3aed;
+      outline-offset: 2px;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.22);
+    }
+    .canvas-textbox.editing {
+      cursor: text;
+      user-select: text;
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+    .canvas-textbox-content {
+      outline: none;
+      min-width: 20px;
+      display: block;
+    }
+    .tb-drag-badge {
+      display: none;
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #7c3aed;
+      color: #fff;
+      font-family: Tahoma, sans-serif;
+      font-size: 9.5px;
+      font-weight: normal;
+      padding: 1px 7px;
+      border-radius: 99px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .canvas-textbox.selected:not(.editing) .tb-drag-badge { display: block; }
 
     /* ส่วนหัวปฏิทิน */
     .cal-header { position: relative; margin-bottom: 8px; padding-top: 2px; }
@@ -440,10 +587,9 @@
     .hol-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 2px; }
     .hol-item:hover { background: #f1f5f9; }
 
-.summary-box {
+    .summary-box {
       width: var(--summary-width);
       margin-right: var(--summary-mr);
-      border: 1.5px solid #000;
       border: 1.5px solid #000;
       font-family: Calibri, Tahoma, sans-serif;
       font-size: var(--summary-size);
@@ -490,11 +636,15 @@
     /* โหมดพิมพ์ A4 แนวนอน (ซ่อนทุกแผงเครื่องมืออัตโนมัติ) */
     @media print {
       html, body { width: 100%; height: auto; background: #fff; overflow: visible !important; }
-      .topbar, .sidebar, .modal-bg { display: none !important; }
+      .topbar, .sidebar, .modal-bg, .floating-text-toolbar, .text-menu-dropdown, .tb-drag-badge { display: none !important; }
       .workspace, .canvas-area { display: block !important; overflow: visible !important; padding: 0 !important; background: #fff !important; }
       .a4-sheet {
         width: 100%; min-height: auto; padding: 0; margin: 0;
         box-shadow: none; page-break-after: avoid; zoom: var(--print-scale);
+      }
+      .canvas-textbox, .canvas-textbox.selected, .canvas-textbox.editing {
+        outline: none !important;
+        box-shadow: none !important;
       }
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
@@ -517,6 +667,18 @@
       <button id="btnModeQuick" class="btn-slate mode-active" onclick="setMode('quick')">🎨 สลับสี</button>
       <button id="btnModeSport" class="btn-gold" onclick="setMode('sport')">⭐ กีฬาสี</button>
       <button id="btnModeEdit" class="btn-slate" onclick="setMode('edit')">✏️ แก้ชื่อ</button>
+
+      <!-- ปุ่มเพิ่มข้อความ / ตราประทับแบบ Canva -->
+      <div class="text-dropdown-wrap">
+        <button class="btn-cyan" id="btnAddTextMenu" onclick="toggleTextMenu(event)">📝 + ข้อความ ▾</button>
+        <div class="text-menu-dropdown" id="textMenuDropdown">
+          <button onclick="addTextBox('custom')">➕ เพิ่มข้อความใหม่</button>
+          <button onclick="addTextBox('original')">🔴 ตราประทับ: ต้นฉบับ</button>
+          <button onclick="addTextBox('copy')">🟣 ตราประทับ: สำเนา</button>
+          <button onclick="addTextBox('draft')">🟠 ตราประทับ: ร่าง (DRAFT)</button>
+        </div>
+      </div>
+
       <button id="btnUndo" class="btn-slate" onclick="undo()" disabled title="ย้อนกลับ (Ctrl+Z)">↩️ ย้อนกลับ</button>
       <button id="btnRedo" class="btn-slate" onclick="redo()" disabled title="ทำซ้ำ (Ctrl+Y)">↪️ ทำซ้ำ</button>
     </div>
@@ -673,7 +835,7 @@
               <input type="text" id="verNameInput" placeholder="เช่น รอบที่ 1 - ม่วงพาสเทล" style="flex:1;padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;font-size:11.5px;">
               <button class="btn-purple" style="padding:6px 10px;border:none;border-radius:6px;cursor:pointer;font-size:11.5px;" onclick="saveVersion()">+ บันทึก</button>
             </div>
-            <div style="font-size:10px;color:#64748b;">*เก็บทั้งดีไซน์และวันหยุดไว้ครบ สามารถกดดูหรือสั่งพิมพ์ PDF ของแต่ละรอบได้เลย</div>
+            <div style="font-size:10px;color:#64748b;">*เก็บทั้งดีไซน์ วันหยุด และข้อความเพิ่มเติมไว้ครบ สามารถกดดูหรือสั่งพิมพ์ PDF ของแต่ละรอบได้เลย</div>
           </div>
 
           <div id="versionList"></div>
@@ -682,8 +844,44 @@
     </aside>
 
     <!-- หน้าต่างขวา: พรีวิวกระดาษ A4 แนวนอน -->
-    <main class="canvas-area">
-      <div class="a4-sheet">
+    <main class="canvas-area" id="canvasArea">
+      <!-- แถบแต่งข้อความสไตล์ Canva (โผล่เมื่อคลิกเลือกกล่องข้อความ) -->
+      <div class="floating-text-toolbar" id="textToolbar" onmousedown="event.stopPropagation()">
+        <select id="tbFont" onchange="updateSelectedTextBox({fontFamily: this.value})">
+          <option value="'supermarket', Tahoma, sans-serif">supermarket</option>
+          <option value="Tahoma, sans-serif">Tahoma</option>
+          <option value="'TH Sarabun New', Tahoma, sans-serif">TH Sarabun</option>
+          <option value="Calibri, Tahoma, sans-serif">Calibri</option>
+          <option value="'CLC Logo', Tahoma, sans-serif">CLC Logo</option>
+        </select>
+        <input type="number" id="tbSize" min="10" max="80" style="width:52px;" title="ขนาดตัวอักษร" oninput="updateSelectedTextBox({fontSize: Number(this.value) || 18})">
+        <button class="ftb-btn" id="tbBold" onclick="toggleTextBoxProp('bold')" title="ตัวหนา"><b>B</b></button>
+        <button class="ftb-btn" id="tbItalic" onclick="toggleTextBoxProp('italic')" title="ตัวเอียง"><i>I</i></button>
+        <div class="ftb-sep"></div>
+        <label class="ftb-label" title="สีตัวอักษร">A<input type="color" id="tbColor" oninput="updateSelectedTextBox({color: this.value})"></label>
+        <button class="ftb-btn" id="tbBgToggle" onclick="toggleTextBoxProp('hasBg')" title="เปิด/ปิดสีพื้นหลัง">พื้นหลัง</button>
+        <input type="color" id="tbBgColor" title="สีพื้นหลัง" oninput="updateSelectedTextBox({bgColor: this.value, hasBg: true})">
+        <button class="ftb-btn" id="tbBorderToggle" onclick="toggleTextBoxProp('hasBorder')" title="เปิด/ปิดกรอบตราประทับ">กรอบ</button>
+        <div class="ftb-sep"></div>
+        <label class="ftb-label" title="หมุนองศา">เอียง
+          <select id="tbRotate" style="width:58px;" onchange="updateSelectedTextBox({rotate: Number(this.value)})">
+            <option value="0">0°</option>
+            <option value="-6">-6°</option>
+            <option value="-12">-12°</option>
+            <option value="6">6°</option>
+            <option value="12">12°</option>
+          </select>
+        </label>
+        <div class="ftb-sep"></div>
+        <button class="ftb-btn" onclick="duplicateSelectedTextBox()" title="ทำสำเนา">❐</button>
+        <button class="ftb-btn ftb-btn-danger" onclick="deleteSelectedTextBox()" title="ลบข้อความ">🗑️</button>
+        <button class="ftb-btn" onclick="selectTextBox(null)" title="ปิดแถบเครื่องมือ">✕</button>
+      </div>
+
+      <div class="a4-sheet" id="a4Sheet">
+        <!-- เลเยอร์กล่องข้อความอิสระแบบ Canva -->
+        <div class="text-overlay-layer" id="textOverlayLayer"></div>
+
         <div class="cal-header">
           <div class="logo-box">
             <img id="companyLogo" src="logo.png" alt="" onerror="this.style.display='none'">
@@ -831,7 +1029,7 @@
     holLineHeight: 1.25,
     summarySize: 10,
     summaryWidth: 250,
- summaryMr: 0,
+    summaryMr: 0,
     signSize: 15.5,
 
     logoSize: 84,
@@ -871,6 +1069,8 @@
   let clickMode = 'quick';
   let calendarsByYear = {};
   let holidays = {};
+  let textBoxes = [];
+  let selectedTextBoxId = null;
   let versions = [];
   let editingKey = null;
 
@@ -895,8 +1095,10 @@
       year: currentYear,
       design: { ...design },
       holidays: JSON.parse(JSON.stringify(holidays)),
+      textBoxes: JSON.parse(JSON.stringify(textBoxes)),
       reopenNote: document.getElementById('reopenNote').textContent,
-      companyName: document.getElementById('companyNameEl').textContent
+      companyName: document.getElementById('companyNameEl').textContent,
+      calSubtitle: document.getElementById('calSubtitle').textContent
     });
   }
 
@@ -919,14 +1121,21 @@
     yearSel.value = currentYear;
     design = { ...DEFAULT_DESIGN, ...s.design };
     holidays = s.holidays || {};
-    calendarsByYear[currentYear] = { holidays, reopenNote: s.reopenNote };
-    document.getElementById('calSubtitle').textContent = `Calendar ${currentYear}`;
+    textBoxes = s.textBoxes || [];
+    calendarsByYear[currentYear] = {
+      ...(calendarsByYear[currentYear] || {}),
+      holidays,
+      textBoxes,
+      reopenNote: s.reopenNote
+    };
+    document.getElementById('calSubtitle').textContent = s.calSubtitle || `Calendar ${currentYear}`;
     document.getElementById('reopenNote').textContent = s.reopenNote || defaultReopenText(currentYear);
     if (s.companyName) document.getElementById('companyNameEl').textContent = s.companyName;
     syncInputs();
     applyDesign();
     renderTemplates();
     renderCalendar();
+    renderTextBoxes();
     markUnsaved();
   }
 
@@ -960,7 +1169,10 @@
   function manualSave(silent = false) {
     calendarsByYear[currentYear] = {
       holidays: JSON.parse(JSON.stringify(holidays)),
+      textBoxes: JSON.parse(JSON.stringify(textBoxes)),
       reopenNote: document.getElementById('reopenNote').textContent,
+      companyName: document.getElementById('companyNameEl').textContent,
+      calSubtitle: document.getElementById('calSubtitle').textContent,
       signs: [
         document.getElementById('sign1').textContent,
         document.getElementById('sign2').textContent,
@@ -971,11 +1183,287 @@
       localStorage.setItem('clc_studio_design_v3', JSON.stringify(design));
       localStorage.setItem('clc_studio_years_v3', JSON.stringify(calendarsByYear));
       localStorage.setItem('clc_studio_versions_v3', JSON.stringify(versions));
+      localStorage.setItem('clc_studio_saved_at_v3', String(Date.now()));
     } catch (e) {}
     const el = document.getElementById('saveStatus');
     el.textContent = silent ? '✓ บันทึกแล้ว' : '✓ บันทึกสำเร็จ!';
     el.classList.remove('unsaved');
   }
+
+  /* =========================================================
+     ระบบกล่องข้อความอิสระ / ตราประทับแบบ Canva
+     ========================================================= */
+  function toggleTextMenu(e) {
+    e.stopPropagation();
+    document.getElementById('textMenuDropdown').classList.toggle('open');
+  }
+
+  function addTextBox(preset) {
+    document.getElementById('textMenuDropdown').classList.remove('open');
+    const sheet = document.getElementById('a4Sheet');
+    const rightX = Math.max(20, sheet.offsetWidth - 175);
+    const offset = (textBoxes.length % 5) * 18;
+
+    const presets = {
+      custom: {
+        text: 'พิมพ์ข้อความที่นี่',
+        x: Math.round(sheet.offsetWidth / 2 - 90),
+        y: 28 + offset,
+        fontSize: 18,
+        fontFamily: "'supermarket', Tahoma, sans-serif",
+        bold: true,
+        italic: false,
+        color: '#4c1d95',
+        hasBg: false,
+        bgColor: '#fef9c3',
+        hasBorder: false,
+        rotate: 0
+      },
+      original: {
+        text: 'ต้นฉบับ',
+        x: rightX,
+        y: 24 + offset,
+        fontSize: 22,
+        fontFamily: "'supermarket', Tahoma, sans-serif",
+        bold: true,
+        italic: false,
+        color: '#dc2626',
+        hasBg: true,
+        bgColor: '#fef2f2',
+        hasBorder: true,
+        rotate: 0
+      },
+      copy: {
+        text: 'สำเนา',
+        x: rightX,
+        y: 24 + offset,
+        fontSize: 22,
+        fontFamily: "'supermarket', Tahoma, sans-serif",
+        bold: true,
+        italic: false,
+        color: '#6d28d9',
+        hasBg: true,
+        bgColor: '#f5f3ff',
+        hasBorder: true,
+        rotate: 0
+      },
+      draft: {
+        text: 'ร่าง (DRAFT)',
+        x: rightX - 24,
+        y: 24 + offset,
+        fontSize: 20,
+        fontFamily: "'supermarket', Tahoma, sans-serif",
+        bold: true,
+        italic: false,
+        color: '#d97706',
+        hasBg: true,
+        bgColor: '#fffbeb',
+        hasBorder: true,
+        rotate: -6
+      }
+    };
+
+    const box = { id: 'tb_' + Date.now() + '_' + Math.floor(Math.random() * 1000), ...(presets[preset] || presets.custom) };
+    textBoxes.push(box);
+    renderTextBoxes();
+    selectTextBox(box.id);
+    markUnsaved();
+    pushUndo(true);
+
+    if (preset === 'custom') {
+      const el = document.querySelector(`[data-tb-id="${box.id}"] .canvas-textbox-content`);
+      if (el) enterTextBoxEdit(box.id, el, true);
+    }
+  }
+
+  function renderTextBoxes() {
+    const layer = document.getElementById('textOverlayLayer');
+    layer.innerHTML = '';
+
+    textBoxes.forEach(tb => {
+      const el = document.createElement('div');
+      el.className = 'canvas-textbox' + (tb.id === selectedTextBoxId ? ' selected' : '');
+      el.dataset.tbId = tb.id;
+      applyTextBoxStyles(el, tb);
+
+      const badge = document.createElement('span');
+      badge.className = 'tb-drag-badge';
+      badge.textContent = 'ลากย้าย • ดับเบิลคลิกแก้ไข';
+      el.appendChild(badge);
+
+      const content = document.createElement('div');
+      content.className = 'canvas-textbox-content';
+      content.textContent = tb.text;
+      el.appendChild(content);
+
+      // ลากย้ายด้วย Pointer Events (รองรับทั้งเมาส์และ iPad)
+      el.addEventListener('pointerdown', e => {
+        e.stopPropagation();
+        selectTextBox(tb.id);
+        if (el.classList.contains('editing')) return;
+
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const origX = tb.x;
+        const origY = tb.y;
+        let moved = false;
+
+        const onMove = ev => {
+          const dx = ev.clientX - startX;
+          const dy = ev.clientY - startY;
+          if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
+          if (!moved) return;
+          const sheet = document.getElementById('a4Sheet');
+          tb.x = Math.max(0, Math.min(sheet.offsetWidth - 40, Math.round(origX + dx)));
+          tb.y = Math.max(0, Math.min(sheet.offsetHeight - 24, Math.round(origY + dy)));
+          el.style.left = tb.x + 'px';
+          el.style.top = tb.y + 'px';
+        };
+
+        const onUp = () => {
+          document.removeEventListener('pointermove', onMove);
+          document.removeEventListener('pointerup', onUp);
+          if (moved) { markUnsaved(); pushUndo(true); }
+        };
+
+        document.addEventListener('pointermove', onMove);
+        document.addEventListener('pointerup', onUp);
+      });
+
+      // ดับเบิลคลิกเพื่อพิมพ์แก้ไขข้อความโดยตรง
+      el.addEventListener('dblclick', e => {
+        e.stopPropagation();
+        enterTextBoxEdit(tb.id, content, false);
+      });
+
+      content.addEventListener('input', () => {
+        tb.text = content.innerText;
+        markUnsaved();
+        pushUndo(false);
+      });
+
+      content.addEventListener('blur', () => {
+        el.classList.remove('editing');
+        content.contentEditable = 'false';
+        if (!tb.text.trim()) {
+          tb.text = 'ข้อความ';
+          content.textContent = tb.text;
+        }
+      });
+
+      layer.appendChild(el);
+    });
+
+    syncTextToolbar();
+  }
+
+  function applyTextBoxStyles(el, tb) {
+    el.style.left = tb.x + 'px';
+    el.style.top = tb.y + 'px';
+    el.style.fontSize = tb.fontSize + 'px';
+    el.style.fontFamily = tb.fontFamily;
+    el.style.fontWeight = tb.bold ? '700' : '400';
+    el.style.fontStyle = tb.italic ? 'italic' : 'normal';
+    el.style.color = tb.color;
+    el.style.backgroundColor = tb.hasBg ? tb.bgColor : 'transparent';
+    el.style.border = tb.hasBorder ? `2px solid ${tb.color}` : '1.5px solid transparent';
+    el.style.transform = tb.rotate ? `rotate(${tb.rotate}deg)` : 'none';
+  }
+
+  function enterTextBoxEdit(id, contentEl, selectAll = false) {
+    const parent = contentEl.closest('.canvas-textbox');
+    if (!parent) return;
+    selectTextBox(id);
+    parent.classList.add('editing');
+    contentEl.contentEditable = 'true';
+    contentEl.focus();
+    if (selectAll) {
+      const range = document.createRange();
+      range.selectNodeContents(contentEl);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }
+
+  function selectTextBox(id) {
+    selectedTextBoxId = id;
+    document.querySelectorAll('.canvas-textbox').forEach(el => {
+      el.classList.toggle('selected', el.dataset.tbId === id);
+      if (el.dataset.tbId !== id) {
+        el.classList.remove('editing');
+        const c = el.querySelector('.canvas-textbox-content');
+        if (c) c.contentEditable = 'false';
+      }
+    });
+    syncTextToolbar();
+  }
+
+  function syncTextToolbar() {
+    const bar = document.getElementById('textToolbar');
+    const tb = textBoxes.find(x => x.id === selectedTextBoxId);
+    if (!tb) {
+      bar.classList.remove('active');
+      return;
+    }
+    bar.classList.add('active');
+    document.getElementById('tbFont').value = tb.fontFamily;
+    document.getElementById('tbSize').value = tb.fontSize;
+    document.getElementById('tbBold').classList.toggle('active', !!tb.bold);
+    document.getElementById('tbItalic').classList.toggle('active', !!tb.italic);
+    document.getElementById('tbColor').value = tb.color;
+    document.getElementById('tbBgToggle').classList.toggle('active', !!tb.hasBg);
+    document.getElementById('tbBgColor').value = tb.bgColor || '#fef2f2';
+    document.getElementById('tbBorderToggle').classList.toggle('active', !!tb.hasBorder);
+    document.getElementById('tbRotate').value = String(tb.rotate || 0);
+  }
+
+  function updateSelectedTextBox(patch) {
+    const tb = textBoxes.find(x => x.id === selectedTextBoxId);
+    if (!tb) return;
+    Object.assign(tb, patch);
+    const el = document.querySelector(`[data-tb-id="${tb.id}"]`);
+    if (el) applyTextBoxStyles(el, tb);
+    syncTextToolbar();
+    markUnsaved();
+    pushUndo(false);
+  }
+
+  function toggleTextBoxProp(prop) {
+    const tb = textBoxes.find(x => x.id === selectedTextBoxId);
+    if (!tb) return;
+    updateSelectedTextBox({ [prop]: !tb[prop] });
+  }
+
+  function duplicateSelectedTextBox() {
+    const tb = textBoxes.find(x => x.id === selectedTextBoxId);
+    if (!tb) return;
+    const copy = { ...JSON.parse(JSON.stringify(tb)), id: 'tb_' + Date.now(), x: tb.x + 20, y: tb.y + 20 };
+    textBoxes.push(copy);
+    renderTextBoxes();
+    selectTextBox(copy.id);
+    markUnsaved();
+    pushUndo(true);
+  }
+
+  function deleteSelectedTextBox() {
+    if (!selectedTextBoxId) return;
+    textBoxes = textBoxes.filter(x => x.id !== selectedTextBoxId);
+    selectedTextBoxId = null;
+    renderTextBoxes();
+    markUnsaved();
+    pushUndo(true);
+  }
+
+  // คลิกพื้นที่ว่างเพื่อยกเลิกการเลือกกล่องข้อความและปิดเมนูดรอปดาวน์
+  document.addEventListener('pointerdown', e => {
+    if (!e.target.closest('.text-dropdown-wrap')) {
+      document.getElementById('textMenuDropdown').classList.remove('open');
+    }
+    if (!e.target.closest('.canvas-textbox') && !e.target.closest('.floating-text-toolbar')) {
+      if (selectedTextBoxId) selectTextBox(null);
+    }
+  });
 
   /* ประวัติเวอร์ชัน (Version History) */
   function saveVersionPrompt() {
@@ -1001,6 +1489,7 @@
       tplName: tpl ? tpl.name : 'Custom',
       design: JSON.parse(JSON.stringify(design)),
       holidays: JSON.parse(JSON.stringify(holidays)),
+      textBoxes: JSON.parse(JSON.stringify(textBoxes)),
       reopenNote: document.getElementById('reopenNote').textContent
     });
     inp.value = '';
@@ -1015,13 +1504,20 @@
     yearSel.value = currentYear;
     design = { ...DEFAULT_DESIGN, ...JSON.parse(JSON.stringify(v.design)) };
     holidays = JSON.parse(JSON.stringify(v.holidays));
-    calendarsByYear[currentYear] = { holidays, reopenNote: v.reopenNote };
+    textBoxes = JSON.parse(JSON.stringify(v.textBoxes || []));
+    calendarsByYear[currentYear] = {
+      ...(calendarsByYear[currentYear] || {}),
+      holidays,
+      textBoxes,
+      reopenNote: v.reopenNote
+    };
     document.getElementById('calSubtitle').textContent = `Calendar ${currentYear}`;
     document.getElementById('reopenNote').textContent = v.reopenNote || defaultReopenText(currentYear);
     syncInputs();
     applyDesign();
     renderTemplates();
     renderCalendar();
+    renderTextBoxes();
     pushUndo(true);
     if (autoPrint) setTimeout(() => window.print(), 200);
   }
@@ -1136,7 +1632,7 @@
 
     document.getElementById('cfgSummarySize').value = design.summarySize;
     document.getElementById('cfgSummaryWidth').value = design.summaryWidth;
- document.getElementById('cfgSummaryMr').value = design.summaryMr;
+    document.getElementById('cfgSummaryMr').value = design.summaryMr;
     document.getElementById('cfgSignSize').value = design.signSize;
 
     document.getElementById('cfgLogoSize').value = design.logoSize;
@@ -1192,7 +1688,7 @@
 
     r.setProperty('--summary-size', design.summarySize + 'px');
     r.setProperty('--summary-width', design.summaryWidth + 'px');
- r.setProperty('--summary-mr', design.summaryMr + 'px');
+    r.setProperty('--summary-mr', design.summaryMr + 'px');
     r.setProperty('--sign-size', design.signSize + 'px');
 
     r.setProperty('--logo-size', design.logoSize + 'px');
@@ -1241,7 +1737,7 @@
     setV('valHolLineHeight', Number(design.holLineHeight).toFixed(2));
     setV('valSummarySize', design.summarySize + 'px');
     setV('valSummaryWidth', design.summaryWidth + 'px');
- setV('valSummaryMr', design.summaryMr + 'px');
+    setV('valSummaryMr', design.summaryMr + 'px');
     setV('valSignSize', design.signSize + 'px');
     setV('valLogoSize', design.logoSize + 'px');
     setV('valLogoTop', design.logoTop + 'px');
@@ -1278,7 +1774,7 @@
       holLineHeight: Number(g('cfgHolLineHeight').value),
       summarySize: Number(g('cfgSummarySize').value),
       summaryWidth: Number(g('cfgSummaryWidth').value),
-   summaryMr: Number(g('cfgSummaryMr').value),
+      summaryMr: Number(g('cfgSummaryMr').value),
       signSize: Number(g('cfgSignSize').value),
       logoSize: Number(g('cfgLogoSize').value),
       logoTop: Number(g('cfgLogoTop').value),
@@ -1352,23 +1848,28 @@
         }
       }
     }
-    return { holidays: map, reopenNote: defaultReopenText(y) };
+    return { holidays: map, textBoxes: [], reopenNote: defaultReopenText(y) };
   }
 
   function changeYear() {
-    // บันทึกปีปัจจุบันเก็บไว้ก่อนสลับปีเสมอ
     if (Object.keys(holidays).length) manualSave(true);
     currentYear = parseInt(yearSel.value, 10);
     if (!calendarsByYear[currentYear]) calendarsByYear[currentYear] = buildDefaultYear(currentYear);
-    holidays = JSON.parse(JSON.stringify(calendarsByYear[currentYear].holidays));
-    document.getElementById('calSubtitle').textContent = `Calendar ${currentYear}`;
-    document.getElementById('reopenNote').textContent = calendarsByYear[currentYear].reopenNote || defaultReopenText(currentYear);
-    if (calendarsByYear[currentYear].signs) {
-      document.getElementById('sign1').textContent = calendarsByYear[currentYear].signs[0];
-      document.getElementById('sign2').textContent = calendarsByYear[currentYear].signs[1];
-      document.getElementById('sign3').textContent = calendarsByYear[currentYear].signs[2];
+    const yData = calendarsByYear[currentYear];
+    holidays = JSON.parse(JSON.stringify(yData.holidays || {}));
+    textBoxes = JSON.parse(JSON.stringify(yData.textBoxes || []));
+    selectedTextBoxId = null;
+
+    document.getElementById('calSubtitle').textContent = yData.calSubtitle || `Calendar ${currentYear}`;
+    if (yData.companyName) document.getElementById('companyNameEl').textContent = yData.companyName;
+    document.getElementById('reopenNote').textContent = yData.reopenNote || defaultReopenText(currentYear);
+    if (yData.signs) {
+      document.getElementById('sign1').textContent = yData.signs[0];
+      document.getElementById('sign2').textContent = yData.signs[1];
+      document.getElementById('sign3').textContent = yData.signs[2];
     }
     renderCalendar();
+    renderTextBoxes();
     pushUndo(true);
   }
 
@@ -1519,7 +2020,7 @@
     rd.readAsDataURL(f);
   }
 
-function exportJSON() {
+  function exportJSON() {
     manualSave(true);
     const data = {
       savedAt: Date.now(),
@@ -1545,28 +2046,40 @@ function exportJSON() {
       currentYear = data.year || 2027;
       yearSel.value = currentYear;
       if (data.holidays && !calendarsByYear[currentYear]) {
-        calendarsByYear[currentYear] = { holidays: data.holidays, reopenNote: data.reopenNote || defaultReopenText(currentYear) };
+        calendarsByYear[currentYear] = { holidays: data.holidays, textBoxes: [], reopenNote: data.reopenNote || defaultReopenText(currentYear) };
       }
-      holidays = JSON.parse(JSON.stringify((calendarsByYear[currentYear] || buildDefaultYear(currentYear)).holidays));
-      document.getElementById('calSubtitle').textContent = `Calendar ${currentYear}`;
-      document.getElementById('reopenNote').textContent = (calendarsByYear[currentYear] && calendarsByYear[currentYear].reopenNote) || defaultReopenText(currentYear);
-      syncInputs(); applyDesign(); renderTemplates(); renderVersions(); renderCalendar(); manualSave(true); pushUndo(true);
+      const yData = calendarsByYear[currentYear] || buildDefaultYear(currentYear);
+      holidays = JSON.parse(JSON.stringify(yData.holidays || {}));
+      textBoxes = JSON.parse(JSON.stringify(yData.textBoxes || []));
+      document.getElementById('calSubtitle').textContent = yData.calSubtitle || `Calendar ${currentYear}`;
+      document.getElementById('reopenNote').textContent = yData.reopenNote || defaultReopenText(currentYear);
+      syncInputs(); applyDesign(); renderTemplates(); renderVersions(); renderCalendar(); renderTextBoxes(); manualSave(true); pushUndo(true);
     };
     rd.readAsText(f);
   }
 
-  /* คีย์ลัด Ctrl+Z / Ctrl+Y / Ctrl+S */
+  /* คีย์ลัด Ctrl+Z / Ctrl+Y / Ctrl+S และปุ่ม Delete ลบกล่องข้อความ */
   document.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); manualSave(); }
+    const isTyping = document.activeElement && (
+      document.activeElement.isContentEditable ||
+      document.activeElement.tagName === 'INPUT' ||
+      document.activeElement.tagName === 'TEXTAREA'
+    );
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); manualSave(); return; }
+    if (isTyping) return;
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
     if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) { e.preventDefault(); redo(); }
+    if ((e.key === 'Delete' || e.key === 'Backspace') && selectedTextBoxId) {
+      e.preventDefault();
+      deleteSelectedTextBox();
+    }
   });
 
-  ['reopenNote','companyNameEl','sign1','sign2','sign3'].forEach(id => {
+  ['reopenNote','companyNameEl','calSubtitle','sign1','sign2','sign3'].forEach(id => {
     document.getElementById(id).addEventListener('input', markUnsaved);
   });
 
-async function initApp() {
+  async function initApp() {
     loadStorage();
     try {
       const res = await fetch('./data.json?t=' + Date.now(), { cache: 'no-store' });
